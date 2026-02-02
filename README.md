@@ -1,4 +1,4 @@
-# Watchful-CLI
+# Decar-CLI
 
 Caffeine free tests and assertions.
 
@@ -8,7 +8,8 @@ You can install Watchful via [npm](https://www.npmjs.com/):
  
     npm install decaf-cli
     
-There is no need to install it globally, the recommended approach is to run it by way of [npm sciprts](https://docs.npmjs.com/misc/scripts). If you do decide to install it globally, however, you may need to prepend [`sudo`](https://en.wikipedia.org/wiki/Sudo), depending on your setup.
+There is no need to install it globally, the recommended approach is to run it by way of [npm sciprts](https://docs.npmjs.com/misc/scripts). 
+If you do decide to install it globally, however, you may need to prepend [`sudo`](https://en.wikipedia.org/wiki/Sudo), depending on your setup.
 
 If you would like to contribute or would simply like to have a look at the code, you can clone the repository with [Git](https://git-scm.com/)...
 
