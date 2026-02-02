@@ -1,4 +1,4 @@
-# Decar-CLI
+# Decaf-CLI
 
 Caffeine free tests and assertions.
 
