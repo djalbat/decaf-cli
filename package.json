@@ -1,7 +1,7 @@
 {
   "name": "decaf-cli",
   "author": "James Smith",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "license": "MIT, Anti-996",
   "homepage": "https://github.com/djalbat/decaf-cli",
   "description": "Caffeine free tests and assertions.",
@@ -29,6 +29,11 @@
     "watch": "npm run clean && npm run batch && npm run incremental",
     "watch-debug": "npm run clean && npm run batch-debug && npm run incremental-debug"
   },
+  "files": [
+    "src",
+    "lib",
+    "decaf.js"
+  ],
   "bin": {
     "watchful": "./decaf.js"
   }
