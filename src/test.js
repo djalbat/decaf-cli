@@ -1,9 +1,14 @@
 "use strict";
 
 export default class Test {
-  constructor(description, callback) {
+  constructor(depth, description, callback) {
+    this.depth = depth;
     this.description = description;
     this.callback = callback;
+  }
+
+  getDepth() {
+    return this.depth;
   }
 
   getDescription() {
@@ -14,8 +19,8 @@ export default class Test {
     return this.callback;
   }
 
-  static fromDescriptionAndCallabck(description, callback) {
-    const test = new Test(description, callback);
+  static fromDepthDescriptionAndCallabck(depth, description, callback) {
+    const test = new Test(depth, description, callback);
 
     return test;
   }

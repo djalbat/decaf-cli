@@ -22,6 +22,8 @@ Options:
   --version|-v                                   Show the version
 
   --help|-h                                      Show this help
+
+  --fail-fast|-f                                 Exit on the first failure
   
 Further information:
 

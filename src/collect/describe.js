@@ -3,7 +3,11 @@
 import Suite from "../suite";
 
 export default function describe(description, callback, context) {
-  const suite = Suite.fromDescription(description);
+  let depth
+
+  ({ depth } = context);
+
+  const suite = Suite.fromDepthAndDescription(depth, description);
 
   let currentSuite;
 
@@ -13,9 +17,12 @@ export default function describe(description, callback, context) {
 
   const previousSuite = currentSuite; ///
 
+  depth++;
+
   currentSuite = suite;///
 
   Object.assign(context, {
+    depth,
     currentSuite
   })
 
@@ -23,7 +30,10 @@ export default function describe(description, callback, context) {
 
   currentSuite = previousSuite; ///
 
+  depth--;
+
   Object.assign(context, {
+    depth,
     currentSuite
   });
 }

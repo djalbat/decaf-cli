@@ -1,8 +1,11 @@
 "use strict";
 
+import Hook from "../hook";
+
 export default function afterEach(callback, context) {
   const { currentSuite } = context,
-        afterEachHook = callback;  ///
+        hook = Hook.fromCallback(callback),
+        afterEachHook = hook;  ///
 
   currentSuite.addAfterEachHook(afterEachHook);
 }

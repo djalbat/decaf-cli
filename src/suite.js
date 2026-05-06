@@ -1,7 +1,8 @@
 "use strict";
 
 export default class Suite {
-  constructor(description, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks) {
+  constructor(depth,description, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks) {
+    this.depth = depth;
     this.description = description;
     this.suites = suites;
     this.tests = tests;
@@ -9,6 +10,10 @@ export default class Suite {
     this.beforeHooks = beforeHooks;
     this.afterEachHooks = afterEachHooks;
     this.beforeEachHooks = beforeEachHooks;
+  }
+
+  getDepth() {
+    return this.depth;
   }
 
   getDescription() {
@@ -35,7 +40,7 @@ export default class Suite {
     return this.afterEachHooks;
   }
 
-  getBeforeEachNooks() {
+  getBeforeEachHooks() {
     return this.beforeEachHooks;
   }
 
@@ -63,7 +68,7 @@ export default class Suite {
     this.beforeEachHooks.push(beforeEachHook);
   }
 
-  static fromNothing() {
+  static fromDepth(depth) {
     const description = null,
           suites = [],
           tests = [],
@@ -71,19 +76,19 @@ export default class Suite {
           beforeHooks = [],
           afterEachHooks = [],
           beforeEachHooks = [],
-          suite = new Suite(description, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
+          suite = new Suite(depth, description, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
 
     return suite;
   }
 
-  static fromDescription(description) {
+  static fromDepthAndDescription(depth, description) {
     const suites = [],
           tests = [],
           afterHooks = [],
           beforeHooks = [],
           afterEachHooks = [],
           beforeEachHooks = [],
-          suite = new Suite(description, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
+          suite = new Suite(depth, description, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
 
     return suite;
   }

@@ -1,54 +1,130 @@
 "use strict";
 
-import { asynchronousUtilities } from "necessary";
+import { isResultPromise } from "../utilities/promise";
+import { UNCAUGHT_EXCEPTION } from "../constants";
+import { CALLBACK_CALLED_TWICE_MESSAGE } from "../messages";
 
-const { whilst } = asynchronousUtilities;
+export function failOrContinue(done, context) {
+  let failed = false;
 
-export function executeOperations(operations, callback, context) {
-  const completed = true;
+  const { failFast } = context;
 
-  Object.assign(context, {
-    operations,
-    completed
-  });
+  if (failFast) {
+    const { success } = context;
 
-  whilst(executeOperation, () => {
-    const { completed } = context;
+    if (!success) {
+      failed = true;
+    }
+  }
 
-    delete context.operations;
+  if (failed) {
+    done();
+  }
 
-    delete context.completed;
-
-    callback(completed);
-  }, context);
+  return failed;
 }
 
-function executeOperation(next, done, context, index) {
-  const { operations } = context,
-        operationsLength = operations.length,
-        lastIndex = operationsLength - 1;
+export function executeCallback(callback, next, done, context) {
+  let completed = false;
 
-  if (index > lastIndex) {
-    done();
+  const complete = () => {
+    if (completed) {
+      const success = false;
+
+      Object.assign(context, {
+        success
+      });
+
+      console.log(CALLBACK_CALLED_TWICE_MESSAGE);
+
+      done();
+
+      return;
+    }
+
+    completed = true;
+
+    process.removeListener(UNCAUGHT_EXCEPTION, uncaughtExceptionListener);
+
+    const failed = failOrContinue(done, context);
+
+    if (failed) {
+      return;
+    }
+
+    next();
+  }
+
+  const uncaughtExceptionListener = (error) => {
+    const success = false;
+
+    Object.assign(context, {
+      success
+    });
+
+    console.error(error);
+
+    complete();
+  };
+
+  process.addListener(UNCAUGHT_EXCEPTION, uncaughtExceptionListener);
+
+  const length = callback.length;
+
+  try {
+    if (length > 0) {
+      callback((error) => {
+        if (error) {
+          const success = false;
+
+          Object.assign(context, {
+            success
+          });
+
+          console.error(error);
+        }
+
+        complete();
+      });
+
+      return;
+    }
+
+    const result = callback(),
+          resultPromise = isResultPromise(result);
+
+    if (resultPromise) {
+      result
+        .then(() => {
+          complete();
+        })
+        .catch((error) => {
+          const success = false;
+
+          Object.assign(context, {
+            success
+          });
+
+          console.error(error);
+
+          complete();
+        });
+
+      return;
+    }
+  } catch (error) {
+    const success = false;
+
+    Object.assign(context, {
+      success
+    });
+
+    console.error(error);
+
+    complete();
 
     return;
   }
 
-  const operation = operations[index];
-
-  operation(proceed, abort, context);
-
-  function proceed() {
-    next();
-  }
-
-  function abort() {
-    const completed = false;
-
-    Object.assign(context, {
-      completed
-    });
-
-    done();
-  }
+  complete();
 }
