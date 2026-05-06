@@ -1,7 +1,8 @@
 "use strict";
 
 import action from "../action";
-import runTestsOperation from "../operation/runTests";
+import assignOperation from "../operation/assign";
+import collectOperation from "../operation/collect";
 import retrieveFilePathsOperation from "../operation/retrieveFilePaths";
 
 import { TEST_RUN_FAILED_MESSAGE } from "../messages";
@@ -9,10 +10,13 @@ import { TEST_RUN_FAILED_MESSAGE } from "../messages";
 export default function testAction(testDirectoryName) {
   const operations = [
           retrieveFilePathsOperation,
-          runTestsOperation
+          assignOperation,
+          collectOperation
         ],
+        currentWorkingDirectoryPath = process.cwd(),
         context = {
-          testDirectoryName
+          testDirectoryName,
+          currentWorkingDirectoryPath
         };
 
   action(operations, (success) => {

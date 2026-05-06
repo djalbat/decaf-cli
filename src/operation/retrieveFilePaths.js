@@ -9,8 +9,7 @@ const { concatenatePaths } = pathUtilities,
 
 export default function retrieveFilePathsOperation(proceed, abort, context) {
   const { testDirectoryName } = context,
-        currentWorkingDirectoryPath = process.cwd(),
-        filePaths = retrieveFilePaths(testDirectoryName, currentWorkingDirectoryPath);
+        filePaths = retrieveFilePaths(testDirectoryName, context);
 
   Object.assign(context, {
     filePaths
@@ -19,17 +18,18 @@ export default function retrieveFilePathsOperation(proceed, abort, context) {
   proceed();
 }
 
-function retrieveFilePaths(testDirectoryName, currentWorkingDirectoryPath) {
+function retrieveFilePaths(testDirectoryName, context) {
   const filePaths = [],
         relateivePath = testDirectoryName;  ///
 
-  filePathsFromRelativeDirectoryPath(filePaths, relateivePath, currentWorkingDirectoryPath);
+  filePathsFromRelativeDirectoryPath(filePaths, relateivePath, context);
 
   return filePaths;
 }
 
-function filePathsFromRelativeDirectoryPath(filePaths, relativePath, currentWorkingDirectoryPath) {
-  const absoluteDirectoryPath = concatenatePaths(currentWorkingDirectoryPath, relativePath),
+function filePathsFromRelativeDirectoryPath(filePaths, relativePath, context) {
+  const { currentWorkingDirectoryPath } = context,
+        absoluteDirectoryPath = concatenatePaths(currentWorkingDirectoryPath, relativePath),
         subEntryNames = readDirectory(absoluteDirectoryPath);
 
   subEntryNames.forEach((subEntryName) => {
@@ -43,7 +43,7 @@ function filePathsFromRelativeDirectoryPath(filePaths, relativePath, currentWork
       if (entryDirectory) {
         const relativePath = path; ///
 
-        filePathsFromRelativeDirectoryPath(filePaths, relativePath, currentWorkingDirectoryPath); ///
+        filePathsFromRelativeDirectoryPath(filePaths, relativePath, context); ///
       } else {
         const filePath = path;  ///
 
