@@ -1,0 +1,90 @@
+"use strict";
+
+export default class Suite {
+  constructor(description, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks) {
+    this.description = description;
+    this.suites = suites;
+    this.tests = tests;
+    this.afterHooks = afterHooks;
+    this.beforeHooks = beforeHooks;
+    this.afterEachHooks = afterEachHooks;
+    this.beforeEachHooks = beforeEachHooks;
+  }
+
+  getDescription() {
+    return this.description;
+  }
+
+  getSuites() {
+    return this.suites;
+  }
+
+  getTests() {
+    return this.tests;
+  }
+
+  getAfterHooks() {
+    return this.afterHooks;
+  }
+
+  getBeforeHooks() {
+    return this.beforeHooks;
+  }
+
+  getAfterEachHooks() {
+    return this.afterEachHooks;
+  }
+
+  getBeforeEachNooks() {
+    return this.beforeEachHooks;
+  }
+
+  addSuite(suite) {
+    this.suites.push(suite);
+  }
+
+  addTest(test) {
+    this.tests.push(test);
+  }
+
+  addAfterHook(afterHook) {
+    this.afterHooks.push(afterHook);
+  }
+
+  addBeforeHook(beforeHook) {
+    this.beforeHooks.push(beforeHook);
+  }
+
+  addAfterEachHook(afterEachHook) {
+    this.afterEachHooks.push(afterEachHook);
+  }
+
+  addBeforeEachHook(beforeEachHook) {
+    this.beforeEachHooks.push(beforeEachHook);
+  }
+
+  static fromNothing() {
+    const description = null,
+          suites = [],
+          tests = [],
+          afterHooks = [],
+          beforeHooks = [],
+          afterEachHooks = [],
+          beforeEachHooks = [],
+          suite = new Suite(description, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
+
+    return suite;
+  }
+
+  static fromDescription(description) {
+    const suites = [],
+          tests = [],
+          afterHooks = [],
+          beforeHooks = [],
+          afterEachHooks = [],
+          beforeEachHooks = [],
+          suite = new Suite(description, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
+
+    return suite;
+  }
+}

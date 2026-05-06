@@ -1,5 +1,5 @@
 "use strict";
 
-export default function xdescribe(description, testFunction, context) {
+export default function xdescribe(description, callback, context) {
   ///
 }

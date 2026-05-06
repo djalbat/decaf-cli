@@ -4,16 +4,23 @@ import { pathToFileURL } from "node:url";
 
 import { pathUtilities, asynchronousUtilities } from "necessary";
 
+import Suite from "../suite";
+
 const { concatenatePaths } = pathUtilities;
 
 const { forEach } = asynchronousUtilities;
 
 export default function collectOperation(proceed, abort, context) {
   const { filePaths } = context,
-        success = true;
+        suite = Suite.fromNothing(),
+        success = true,
+        rootSuite = suite,  ///
+        currentSuite = rootSuite;  ///
 
   Object.assign(context, {
-    success
+    success,
+    rootSuite,
+    currentSuite
   });
 
   forEach(filePaths, importFile, () => {

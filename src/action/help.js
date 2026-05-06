@@ -15,7 +15,7 @@ Commands:
   
 Arguments:
 
-  test-directory                                 The root directory of the tests
+  test-directory                                 The tests directory
   
 Options:
 
