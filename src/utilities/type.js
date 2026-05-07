@@ -1,7 +1,7 @@
 "use strict";
 
 import { jsonUtilities } from "necessary";
-import { ARRAY_TYPE, OBJECT_TYPE, SYMBOL_TYPE, BIG_INT_TYPE, FUNCTION_TYPE, UNDEFINED_TYPE, PRIMITIVE_TYPE } from "../constants";
+import { ARRAY_TYPE, OBJECT_TYPE, SYMBOL_TYPE, BIG_INT_TYPE, FUNCTION_TYPE, UNDEFINED_TYPE, PRIMITIVE_TYPE } from "../types";
 
 const { isNull, isArray, isObject, isString, isNumber, isBoolean } = jsonUtilities;
 

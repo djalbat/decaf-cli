@@ -2,7 +2,7 @@
 
 import { typeOf } from "../utilities/type";
 import { formatValue } from "../utilities/format";
-import { ARRAY_TYPE, OBJECT_TYPE, PRIMITIVE_TYPE, FUNCTION_TYPE } from "../constants";
+import { ARRAY_TYPE, OBJECT_TYPE, PRIMITIVE_TYPE, FUNCTION_TYPE } from "../types";
 
 export function deepEqual(valueA, valueB) {
   if (valueA === valueB) {

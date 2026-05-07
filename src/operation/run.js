@@ -67,6 +67,22 @@ function runTest(suite, test, next, done, context) {
   sequence(operations, next, context);
 }
 
+function runTests(suite, next, done, context) {
+  const failed = failOrContinue(done, context);
+
+  if (failed) {
+    return;
+  }
+
+  const tests = suite.getTests();
+
+  done = next;  ///
+
+  forEach(tests, (test, next, done, context) => {
+    runTest(suite, test, next, done, context);
+  }, done, context);
+}
+
 function runChildSuites(suite, next, done, context) {
   const failed = failOrContinue(done, context);
 
@@ -83,20 +99,28 @@ function runChildSuites(suite, next, done, context) {
   }, done, context);
 }
 
-function runTests(suite, next, done, context) {
+function executeHook(hook, next, done, context) {
   const failed = failOrContinue(done, context);
 
   if (failed) {
     return;
   }
 
-  const tests = suite.getTests();
+  const callback = hook.getCallback();
 
-  done = next;  ///
+  executeCallback(callback, next, done, context);
+}
 
-  forEach(tests, (test, next, done, context) => {
-    runTest(suite, test, next, done, context);
-  }, done, context);
+function executeTest(test, next, done, context) {
+  const failed = failOrContinue(done, context);
+
+  if (failed) {
+    return;
+  }
+
+  const callback = test.getCallback();
+
+  executeCallback(callback, next, done, context)
 }
 
 function executeAfterHooks(suite, next, done, context) {
@@ -153,28 +177,4 @@ function exectuteBeforeEachHooks(suite, next, done, context) {
   done = next;  ///
 
   forEach(beforeEachHooks, executeHook, done, context);
-}
-
-function executeHook(hook, next, done, context) {
-  const failed = failOrContinue(done, context);
-
-  if (failed) {
-    return;
-  }
-
-  const callback = hook.getCallback();
-
-  executeCallback(callback, next, done, context);
-}
-
-function executeTest(test, next, done, context) {
-  const failed = failOrContinue(done, context);
-
-  if (failed) {
-    return;
-  }
-
-  const callback = test.getCallback();
-
-  executeCallback(callback, next, done, context)
 }
