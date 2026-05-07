@@ -4,7 +4,7 @@ import { isResultPromise } from "../utilities/promise";
 import { UNCAUGHT_EXCEPTION } from "../constants";
 import { CALLBACK_CALLED_TWICE_MESSAGE } from "../messages";
 
-export function failOrContinue(done, context) {
+export function failOrContinue(next, done, context) {
   let failedFast = false;
 
   const { success } = context;
@@ -22,7 +22,7 @@ export function failOrContinue(done, context) {
   return failedFast;
 }
 
-export function executeCallback(callback, next, context) {
+export function executeCallback(callback, next, done, context) {
   let completed = false;
 
   const complete = (success) => {

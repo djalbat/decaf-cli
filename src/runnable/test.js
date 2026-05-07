@@ -1,14 +1,13 @@
 "use strict";
 
-export default class Test {
+import Runnable from "../runnable";
+
+export default class Test extends Runnable{
   constructor(parentSuite, description, callback) {
-    this.parentSuite = parentSuite;
+    super(parentSuite);
+
     this.description = description;
     this.callback = callback;
-  }
-
-  getParentSuite() {
-    return this.parentSuite;
   }
 
   getDescription() {
