@@ -7,11 +7,12 @@ import Runnable from "../runnable";
 const { push } = arrayUtilities;
 
 export default class Suite extends Runnable {
-  constructor(parentSuite, description, skipped, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks) {
+  constructor(parentSuite, description, skipped, focused, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks) {
     super(parentSuite);
 
     this.description = description;
     this.skipped = skipped;
+    this.focused = focused;
     this.suites = suites;
     this.tests = tests;
     this.afterHooks = afterHooks;
@@ -26,6 +27,10 @@ export default class Suite extends Runnable {
 
   isSkipped() {
     return this.skipped;
+  }
+
+  isFocused() {
+    return this.focused;
   }
 
   getSuites() {
@@ -104,18 +109,46 @@ export default class Suite extends Runnable {
     const parentSuite = null,
           description = null,
           skipped = false,
+          focused = false,
           suites = [],
           tests = [],
           afterHooks = [],
           beforeHooks = [],
           afterEachHooks = [],
           beforeEachHooks = [],
-          suite = new Suite(parentSuite, description, skipped, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
+          suite = new Suite(parentSuite, description, skipped, focused, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
 
     return suite;
   }
 
   static fromParentSuiteAndDescription(parentSuite, description) {
+    const skipped = false,
+          focused = false,
+          suites = [],
+          tests = [],
+          afterHooks = [],
+          beforeHooks = [],
+          afterEachHooks = [],
+          beforeEachHooks = [],
+          suite = new Suite(parentSuite, description, skipped, focused, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
+
+    return suite;
+  }
+
+  static fromParentSuitDescriptionAndSkipped(parentSuite, description, skipped) {
+    const focused = false,
+          suites = [],
+          tests = [],
+          afterHooks = [],
+          beforeHooks = [],
+          afterEachHooks = [],
+          beforeEachHooks = [],
+          suite = new Suite(parentSuite, description, skipped, focused, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
+
+    return suite;
+  }
+
+  static fromParentSuitDescriptionAndFocused(parentSuite, description, focused) {
     const skipped = false,
           suites = [],
           tests = [],
@@ -123,19 +156,7 @@ export default class Suite extends Runnable {
           beforeHooks = [],
           afterEachHooks = [],
           beforeEachHooks = [],
-          suite = new Suite(parentSuite, description, skipped, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
-
-    return suite;
-  }
-
-  static fromParentSuitDescriptionAndSkipped(parentSuite, description, skipped) {
-    const suites = [],
-          tests = [],
-          afterHooks = [],
-          beforeHooks = [],
-          afterEachHooks = [],
-          beforeEachHooks = [],
-          suite = new Suite(parentSuite, description, skipped, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
+          suite = new Suite(parentSuite, description, skipped, focused, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
 
     return suite;
   }
