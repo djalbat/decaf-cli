@@ -3,37 +3,26 @@
 import Suite from "../suite";
 
 export default function describe(description, callback, context) {
-  let depth
-
-  ({ depth } = context);
-
-  const suite = Suite.fromDepthAndDescription(depth, description);
-
   let currentSuite;
 
   ({ currentSuite } = context);
 
+  const parentSuite = currentSuite, ///
+        suite = Suite.fromDescriptionAndParentSuite(description, parentSuite);
+
   currentSuite.addSuite(suite);
-
-  const previousSuite = currentSuite; ///
-
-  depth++;
 
   currentSuite = suite;///
 
   Object.assign(context, {
-    depth,
     currentSuite
   })
 
   callback();
 
-  currentSuite = previousSuite; ///
-
-  depth--;
+  currentSuite = parentSuite; ///
 
   Object.assign(context, {
-    depth,
     currentSuite
   });
 }

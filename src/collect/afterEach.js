@@ -4,7 +4,8 @@ import Hook from "../hook";
 
 export default function afterEach(callback, context) {
   const { currentSuite } = context,
-        hook = Hook.fromCallback(callback),
+        parentSuite = currentSuite, ///
+        hook = Hook.fromCallbackAndParentSuite(callback, parentSuite),
         afterEachHook = hook;  ///
 
   currentSuite.addAfterEachHook(afterEachHook);

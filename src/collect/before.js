@@ -4,7 +4,8 @@ import Hook from "../hook";
 
 export default function before(callback, context) {
   const { currentSuite } = context,
-        hook = Hook.fromCallback(callback),
+        parentSuite = currentSuite, ///
+        hook = Hook.fromCallbackAndParentSuite(callback, parentSuite),
         beforeHook = hook;  ///
 
   currentSuite.addBeforeHook(beforeHook);

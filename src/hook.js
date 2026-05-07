@@ -1,16 +1,21 @@
 "use strict";
 
 export default class Hook {
-  constructor(callback) {
+  constructor(callback, parentSuite) {
     this.callback = callback;
+    this.parentSuite = parentSuite;
   }
 
   getCallback() {
     return this.callback;
   }
 
-  static fromCallback(callback) {
-    const hook = new Hook(callback);
+  getParentSuite() {
+    return this.parentSuite;
+  }
+
+  static fromCallbackAndParentSuite(callback, parentSuite) {
+    const hook = new Hook(callback, parentSuite);
 
     return hook;
   }

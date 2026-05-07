@@ -11,6 +11,14 @@ export function equal(valueA, valueB) {
   throw new Error(`The '${formatValue(valueA)}' and '${formatValue(valueB)}' values are not equal.`);
 }
 
+export function isNull(value) {
+  if (value === null) {
+    return;
+  }
+
+  throw new Error(`The '${formatValue(value)}' value is not null.`);
+}
+
 export function isTrue(value) {
   if (value === true) {
     return;
@@ -27,6 +35,18 @@ export function isFalse(value) {
   throw new Error(`The '${formatValue(value)}' value is not false.`);
 }
 
+export function isEmpty(array) {
+  const arrayLength = array.length;
+
+  if (arrayLength === 0) {
+    return;
+  }
+
+  const value = array;  ///
+
+  throw new Error(`The '${arrayLength}' length of the '${formatValue(value)}' array is not zero.`);
+}
+
 export function lengthOf(array, length) {
   const arrayLength = array.length;
 
@@ -34,13 +54,17 @@ export function lengthOf(array, length) {
     return;
   }
 
-  throw new Error(`The '${arrayLength}' array length is not the expected '${length}' length.`);
+  const value = array;  ///
+
+  throw new Error(`The '${arrayLength}' length of the '${formatValue(value)}' array is not the expected '${length}' length.`);
 }
 
 export default {
   equal,
+  isNull,
   isTrue,
   isFalse,
+  isEmpty,
   lengthOf,
   deepEqual
 };

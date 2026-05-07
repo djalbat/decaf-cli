@@ -12,14 +12,12 @@ const { forEach } = asynchronousUtilities;
 
 export default function collectOperation(proceed, abort, context) {
   const { filePaths } = context,
-        depth = 0,
-        suite = Suite.fromDepth(depth),
+        suite = Suite.fromNothing(),
         success = true,
         rootSuite = suite,  ///
         currentSuite = rootSuite;  ///
 
   Object.assign(context, {
-    depth,
     success,
     rootSuite,
     currentSuite
@@ -28,7 +26,6 @@ export default function collectOperation(proceed, abort, context) {
   forEach(filePaths, importFile, () => {
     const { success } = context;
 
-    delete context.depth;
     delete context.success;
     delete context.currentSuite;
 

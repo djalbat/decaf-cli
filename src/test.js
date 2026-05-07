@@ -1,26 +1,26 @@
 "use strict";
 
 export default class Test {
-  constructor(depth, description, callback) {
-    this.depth = depth;
+  constructor(description, parentSuite, callback) {
     this.description = description;
+    this.parentSuite = parentSuite;
     this.callback = callback;
-  }
-
-  getDepth() {
-    return this.depth;
   }
 
   getDescription() {
     return this.description;
   }
 
+  getParentSuite() {
+    return this.parentSuite;
+  }
+
   getCallback() {
     return this.callback;
   }
 
-  static fromDepthDescriptionAndCallabck(depth, description, callback) {
-    const test = new Test(depth, description, callback);
+  static fromDescriptionParentSuiteAndCallback(description, parentSuite, callback) {
+    const test = new Test(description, parentSuite, callback);
 
     return test;
   }
