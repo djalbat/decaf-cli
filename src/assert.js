@@ -1,11 +1,14 @@
 "use strict";
 
+import { deepEqual } from "./utilities/equality";
+import { formatValue } from "./utilities/format";
+
 export function equal(valueA, valueB) {
   if (valueA === valueB) {
     return;
   }
 
-  throw new Error(`The '${valueA}' and '${valueB}' values are not equal.`);
+  throw new Error(`The '${formatValue(valueA)}' and '${formatValue(valueB)}' values are not equal.`);
 }
 
 export function isTrue(value) {
@@ -13,7 +16,7 @@ export function isTrue(value) {
     return;
   }
 
-  throw new Error(`The '${value}' value is not true.`);
+  throw new Error(`The '${formatValue(value)}' value is not true.`);
 }
 
 export function isFalse(value) {
@@ -21,7 +24,7 @@ export function isFalse(value) {
     return;
   }
 
-  throw new Error(`The '${value}' value is not false.`);
+  throw new Error(`The '${formatValue(value)}' value is not false.`);
 }
 
 export function lengthOf(array, length) {
@@ -32,10 +35,6 @@ export function lengthOf(array, length) {
   }
 
   throw new Error(`The '${arrayLength}' array length is not the expected '${length}' length.`);
-}
-
-export function deepEqual(valueA, valueB) {
-  debugger
 }
 
 export default {
