@@ -7,10 +7,11 @@ import Runnable from "../runnable";
 const { push } = arrayUtilities;
 
 export default class Suite extends Runnable {
-  constructor(parentSuite, description, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks) {
+  constructor(parentSuite, description, skipped, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks) {
     super(parentSuite);
 
     this.description = description;
+    this.skipped = skipped;
     this.suites = suites;
     this.tests = tests;
     this.afterHooks = afterHooks;
@@ -23,12 +24,24 @@ export default class Suite extends Runnable {
     return this.description;
   }
 
+  isSkipped() {
+    return this.skipped;
+  }
+
   getSuites() {
     return this.suites;
   }
 
-  getTests() {
-    return this.tests;
+  getTests(tests = [], recursive = false) {
+    push(tests, this.tests);
+
+    if (recursive) {
+      this.suites.forEach((suite) => {
+        suite.getTests(tests, recursive);
+      });
+    }
+
+    return tests;
   }
 
   getAfterHooks() {
@@ -90,25 +103,39 @@ export default class Suite extends Runnable {
   static fromNothing() {
     const parentSuite = null,
           description = null,
+          skipped = false,
           suites = [],
           tests = [],
           afterHooks = [],
           beforeHooks = [],
           afterEachHooks = [],
           beforeEachHooks = [],
-          suite = new Suite(parentSuite, description, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
+          suite = new Suite(parentSuite, description, skipped, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
 
     return suite;
   }
 
   static fromParentSuiteAndDescription(parentSuite, description) {
+    const skipped = false,
+          suites = [],
+          tests = [],
+          afterHooks = [],
+          beforeHooks = [],
+          afterEachHooks = [],
+          beforeEachHooks = [],
+          suite = new Suite(parentSuite, description, skipped, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
+
+    return suite;
+  }
+
+  static fromParentSuitDescriptionAndSkipped(parentSuite, description, skipped) {
     const suites = [],
           tests = [],
           afterHooks = [],
           beforeHooks = [],
           afterEachHooks = [],
           beforeEachHooks = [],
-          suite = new Suite(parentSuite, description, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
+          suite = new Suite(parentSuite, description, skipped, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
 
     return suite;
   }

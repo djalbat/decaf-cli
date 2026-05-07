@@ -1,6 +1,6 @@
 "use strict";
 
-import { red, green, yellow, bold } from "./utilities/colour";
+import { red, green, yellow, bold } from "./utilities/effects";
 
 export const SUCCESS_ICON = bold(green("✓"));
 export const FAILURE_ICON = bold(red("✖"));

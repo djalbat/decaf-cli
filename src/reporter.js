@@ -1,14 +1,16 @@
 "use strict";
 
 import { offsetConsoleLog } from "./utilities/terminal";
+import { cyan, strikethrough } from "./utilities/effects";
 import { DOUBLE_SPACE, PENDING_DELAY } from "./constants";
 import { SUCCESS_ICON, FAILURE_ICON, PENDING_ICONS, PENDING_ICONS_LENGTH } from "./icons"
 
 export default class Reporter {
-  constructor(index, interval, failedCount, successfulCount) {
+  constructor(index, interval, failedCount, skippedCount, successfulCount) {
     this.index = index;
     this.interval = interval;
     this.failedCount = failedCount;
+    this.skippedCount = skippedCount;
     this.successfulCount = successfulCount;
   }
 
@@ -22,6 +24,10 @@ export default class Reporter {
 
   getFailedCount() {
     return this.failedCount;
+  }
+
+  getSkippedCount() {
+    return this.skippedCount;
   }
 
   getSuccessCount() {
@@ -61,14 +67,38 @@ export default class Reporter {
 
   testFailed(test) {
     const icon = FAILURE_ICON,
-          depth = test.getDepth(),
-          description = test.getDescription();
+      depth = test.getDepth(),
+      description = test.getDescription();
 
     this.failedCount += 1;
 
     this.pendingStop()
 
     this.offsetConsoleLog(description, depth, icon);
+  }
+
+  testSkipped(test) {
+    const depth = test.getDepth(),
+          description = test.getDescription();
+
+    this.skippedCount += 1;
+
+    this.offsetConsoleLog(strikethrough(description), depth);
+  }
+
+  suiteSkipped(suite) {
+    const tests = [],
+          recursive = true;
+
+    suite.getTests(tests, recursive);
+
+    const depth = suite.getDepth(),
+          description = suite.getDescription(),
+          testsLength = tests.length;
+
+    this.skippedCount += testsLength;
+
+    this.offsetConsoleLog(cyan(strikethrough(description)), depth);
   }
 
   pendingUpdate(test, initial = false) {
@@ -105,11 +135,11 @@ export default class Reporter {
   }
 
   summarise() {
-    const totalCount = this.failedCount + this.successfulCount;
+    const totalCount = this.failedCount + this.skippedCount + this.successfulCount;
 
     console.log();
 
-    console.log(`A total of ${totalCount} tests ran with ${this.failedCount} failures and ${this.successfulCount} successes.`);
+    console.log(`A total of ${totalCount} tests ran with ${this.failedCount} failures, ${this.skippedCount} skipped and ${this.successfulCount} successes.`);
   }
 
   consoleLog(description, depth, icon = null) {
@@ -120,19 +150,22 @@ export default class Reporter {
         console.log(`${padding}${description}`);
   }
 
-  offsetConsoleLog(description, depth, icon) {
+  offsetConsoleLog(description, depth, icon = null) {
     const offset = 1,
           padding = paddingFromDepth(depth);
 
-    offsetConsoleLog(`${padding}${description} ${icon}`, offset);
+    (icon !== null) ?
+      offsetConsoleLog(`${padding}${description} ${icon}`, offset) :
+        offsetConsoleLog(`${padding}${description}`, offset);
   }
 
   static fromNothing() {
     const index = 0,
           interval = null,
           failedCount = 0,
+          skippedCount = 0,
           successfulCount = 0,
-          reporter = new Reporter(index, interval, failedCount, successfulCount);
+          reporter = new Reporter(index, interval, failedCount, skippedCount, successfulCount);
 
     return reporter;
   }

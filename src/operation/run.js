@@ -43,6 +43,18 @@ function runSuite(suite, next, done, context) {
     return;
   }
 
+  const skipped = suite.isSkipped();
+
+  if (skipped) {
+    const { reporter } = context;
+
+    reporter.suiteSkipped(suite);
+
+    next();
+
+    return;
+  }
+
   const operations = [
     (next, done, context) => { executeBeforeHooks(suite, next, done, context); },
     (next, done, context) => { runTests(suite, next, done, context); },
@@ -65,6 +77,18 @@ function runTest(suite, test, next, done, context) {
   const failedFast = failOrContinue(next, done, context);
 
   if (failedFast) {
+    return;
+  }
+
+  const skipped = test.isSkipped();
+
+  if (skipped) {
+    const { reporter } = context;
+
+    reporter.testSkipped(test);
+
+    next();
+
     return;
   }
 
