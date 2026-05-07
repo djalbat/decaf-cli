@@ -1,8 +1,8 @@
 "use strict";
 
 import { offsetConsoleLog } from "./utilities/terminal";
-import { cyan, strikethrough } from "./utilities/effects";
 import { DOUBLE_SPACE, PENDING_DELAY } from "./constants";
+import { red, cyan, green, strikethrough } from "./utilities/effects";
 import { SUCCESS_ICON, FAILURE_ICON, PENDING_ICONS, PENDING_ICONS_LENGTH } from "./icons"
 
 export default class Reporter {
@@ -139,7 +139,7 @@ export default class Reporter {
 
     console.log();
 
-    console.log(`A total of ${totalCount} tests ran with ${this.failedCount} failures, ${this.skippedCount} skipped and ${this.successfulCount} successes.`);
+    console.log(`A total of ${totalCount} tests ran with ${red(this.failedCount)} failures, ${cyan(this.skippedCount)} skipped and ${green(this.successfulCount)} successes.`);
   }
 
   consoleLog(description, depth, icon = null) {
