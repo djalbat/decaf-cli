@@ -4,7 +4,7 @@ import { pathToFileURL } from "node:url";
 
 import { pathUtilities, asynchronousUtilities } from "necessary";
 
-import Suite from "../suite";
+import Suite from "../runnable/suite";
 
 const { concatenatePaths } = pathUtilities;
 

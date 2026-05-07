@@ -2,23 +2,25 @@
 
 import { asynchronousUtilities } from "necessary";
 
+import Reporter from "../reporter";
+
 import { executeCallback, failOrContinue } from "../utilities/callback";
 
 const { sequence, forEach } = asynchronousUtilities;
 
 export default function runOperation(proceed, abort, context) {
   const { rootSuite } = context,
+        suite = rootSuite,  ///
         success = true,
-        suite = rootSuite;  ///
+        reporter = Reporter.fromNothing();
 
   Object.assign(context, {
-    success
+    success,
+    reporter
   });
 
   runSuite(suite, () => {
     const { success } = context;
-
-    delete context.success;
 
     success ?
       proceed() :
@@ -33,9 +35,9 @@ function runSuite(suite, next, done, context) {
     done = next;  ///
   }
 
-  const failed = failOrContinue(done, context);
+  const failedFast = failOrContinue(done, context);
 
-  if (failed) {
+  if (failedFast) {
     return;
   }
 
@@ -46,31 +48,55 @@ function runSuite(suite, next, done, context) {
     (next, done, context) => { executeAfterHooks(suite, next, done, context); }
   ];
 
-  done = next;  ///
+  const { reporter } = context;
 
-  sequence(operations, done, context);
+  reporter.suiteStarted(suite);
+
+  sequence(operations, () => {
+    reporter.suiteFinished(suite);
+
+    next();
+  }, context);
 }
 
 function runTest(suite, test, next, done, context) {
-  const failed = failOrContinue(done, context);
+  const failedFast = failOrContinue(done, context);
 
-  if (failed) {
+  if (failedFast) {
     return;
   }
 
+  const success = true;
+
+  Object.assign(context, {
+    success
+  });
+
   const operations = [
-    (next, done, context) => { exectuteBeforeEachHooks(suite, next, done, context); },
+    (next, done, context) => { executeBeforeEachHooks(suite, next, done, context); },
     (next, done, context) => { executeTest(test, next, done, context); },
     (next, done, context) => { executeAfterEachHooks(suite, next, done, context); }
   ];
 
-  sequence(operations, next, context);
+  const { reporter } = context;
+
+  reporter.testStarted(test);
+
+  sequence(operations, () => {
+    const { success } = context;
+
+    success ?
+      reporter.testSuccessful(test) :
+        reporter.testFailed(test);
+
+    next();
+  }, context);
 }
 
 function runTests(suite, next, done, context) {
-  const failed = failOrContinue(done, context);
+  const failedFast = failOrContinue(done, context);
 
-  if (failed) {
+  if (failedFast) {
     return;
   }
 
@@ -84,9 +110,9 @@ function runTests(suite, next, done, context) {
 }
 
 function runChildSuites(suite, next, done, context) {
-  const failed = failOrContinue(done, context);
+  const failedFast = failOrContinue(done, context);
 
-  if (failed) {
+  if (failedFast) {
     return;
   }
 
@@ -99,34 +125,10 @@ function runChildSuites(suite, next, done, context) {
   }, done, context);
 }
 
-function executeHook(hook, next, done, context) {
-  const failed = failOrContinue(done, context);
-
-  if (failed) {
-    return;
-  }
-
-  const callback = hook.getCallback();
-
-  executeCallback(callback, next, done, context);
-}
-
-function executeTest(test, next, done, context) {
-  const failed = failOrContinue(done, context);
-
-  if (failed) {
-    return;
-  }
-
-  const callback = test.getCallback();
-
-  executeCallback(callback, next, done, context)
-}
-
 function executeAfterHooks(suite, next, done, context) {
-  const failed = failOrContinue(done, context);
+  const failedFast = failOrContinue(done, context);
 
-  if (failed) {
+  if (failedFast) {
     return;
   }
 
@@ -138,9 +140,9 @@ function executeAfterHooks(suite, next, done, context) {
 }
 
 function executeBeforeHooks(suite, next, done, context) {
-  const failed = failOrContinue(done, context);
+  const failedFast = failOrContinue(done, context);
 
-  if (failed) {
+  if (failedFast) {
     return;
   }
 
@@ -152,9 +154,9 @@ function executeBeforeHooks(suite, next, done, context) {
 }
 
 function executeAfterEachHooks(suite, next, done, context) {
-  const failed = failOrContinue(done, context);
+  const failedFast = failOrContinue(done, context);
 
-  if (failed) {
+  if (failedFast) {
     return;
   }
 
@@ -165,10 +167,10 @@ function executeAfterEachHooks(suite, next, done, context) {
   forEach(afterEachHooks, executeHook, done, context);
 }
 
-function exectuteBeforeEachHooks(suite, next, done, context) {
-  const failed = failOrContinue(done, context);
+function executeBeforeEachHooks(suite, next, done, context) {
+  const failedFast = failOrContinue(done, context);
 
-  if (failed) {
+  if (failedFast) {
     return;
   }
 
@@ -178,3 +180,28 @@ function exectuteBeforeEachHooks(suite, next, done, context) {
 
   forEach(beforeEachHooks, executeHook, done, context);
 }
+
+function executeHook(hook, next, done, context) {
+  const failedFast = failOrContinue(done, context);
+
+  if (failedFast) {
+    return;
+  }
+
+  const callback = hook.getCallback();
+
+  executeCallback(callback, next, context);
+}
+
+function executeTest(test, next, done, context) {
+  const failedFast = failOrContinue(done, context);
+
+  if (failedFast) {
+    return;
+  }
+
+  const callback = test.getCallback();
+
+  executeCallback(callback, next, context)
+}
+

@@ -1,11 +1,11 @@
 "use strict";
 
-import Hook from "../hook";
+import Hook from "../runnable/hook";
 
 export default function after(callback, context) {
   const { currentSuite } = context,
         parentSuite = currentSuite, ///
-        hook = Hook.fromCallbackAndParentSuite(callback, parentSuite),
+        hook = Hook.fromParentSuiteAndCallback(parentSuite, callback),
         afterHook = hook;  ///
 
   currentSuite.addAfterHook(afterHook);

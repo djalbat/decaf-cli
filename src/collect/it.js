@@ -1,11 +1,11 @@
 "use strict";
 
-import Test from "../test";
+import Test from "../runnable/test";
 
 export default function it(description, callback, context) {
   const { currentSuite } = context,
         parentSuite = currentSuite, ///
-        test = Test.fromDescriptionParentSuiteAndCallback(description, parentSuite, callback)
+        test = Test.fromParentSuiteDescriptionAndCallback(parentSuite, description, callback)
 
   currentSuite.addTest(test);
 }

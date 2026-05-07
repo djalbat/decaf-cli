@@ -1,11 +1,11 @@
 "use strict";
 
-import Hook from "../hook";
+import Hook from "../runnable/hook";
 
 export default function beforeEach(callback, context) {
   const { currentSuite } = context,
         parentSuite = currentSuite, ///
-        hook = Hook.fromCallbackAndParentSuite(callback, parentSuite),
+        hook = Hook.fromParentSuiteAndCallback(parentSuite, callback),
         beforeEachHook = hook;  ///
 
   currentSuite.addBeforeEachHook(beforeEachHook);

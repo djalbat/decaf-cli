@@ -5,39 +5,29 @@ import { UNCAUGHT_EXCEPTION } from "../constants";
 import { CALLBACK_CALLED_TWICE_MESSAGE } from "../messages";
 
 export function failOrContinue(done, context) {
-  let failed = false;
+  let failedFast = false;
 
-  const { failFast } = context;
+  const { success } = context;
 
-  if (failFast) {
-    const { success } = context;
+  if (!success) {
+    const { failFast } = context;
 
-    if (!success) {
-      failed = true;
+    if (failFast) {
+      failedFast = true;
+
+      done();
     }
   }
 
-  if (failed) {
-    done();
-  }
-
-  return failed;
+  return failedFast;
 }
 
-export function executeCallback(callback, next, done, context) {
+export function executeCallback(callback, next, context) {
   let completed = false;
 
-  const complete = () => {
+  const complete = (success) => {
     if (completed) {
-      const success = false;
-
-      Object.assign(context, {
-        success
-      });
-
       console.log(CALLBACK_CALLED_TWICE_MESSAGE);
-
-      done();
 
       return;
     }
@@ -46,11 +36,16 @@ export function executeCallback(callback, next, done, context) {
 
     process.removeListener(UNCAUGHT_EXCEPTION, uncaughtExceptionListener);
 
-    const failed = failOrContinue(done, context);
+    let failed;
 
-    if (failed) {
-      return;
-    }
+    ({ failed } = context);
+
+    failed = failed || !success;  ///
+
+    Object.assign(context, {
+      failed,
+      success
+    });
 
     next();
   }
@@ -58,13 +53,9 @@ export function executeCallback(callback, next, done, context) {
   const uncaughtExceptionListener = (error) => {
     const success = false;
 
-    Object.assign(context, {
-      success
-    });
-
     console.error(error);
 
-    complete();
+    complete(success);
   };
 
   process.addListener(UNCAUGHT_EXCEPTION, uncaughtExceptionListener);
@@ -74,17 +65,15 @@ export function executeCallback(callback, next, done, context) {
   try {
     if (length > 0) {
       callback((error) => {
-        if (error) {
-          const success = false;
+        let success = true;
 
-          Object.assign(context, {
-            success
-          });
+        if (error) {
+          success = false;
 
           console.error(error);
         }
 
-        complete();
+        complete(success);
       });
 
       return;
@@ -96,18 +85,16 @@ export function executeCallback(callback, next, done, context) {
     if (resultPromise) {
       result
         .then(() => {
-          complete();
+          const success = true;
+
+          complete(success);
         })
         .catch((error) => {
           const success = false;
 
-          Object.assign(context, {
-            success
-          });
-
           console.error(error);
 
-          complete();
+          complete(success);
         });
 
       return;
@@ -115,16 +102,14 @@ export function executeCallback(callback, next, done, context) {
   } catch (error) {
     const success = false;
 
-    Object.assign(context, {
-      success
-    });
-
     console.error(error);
 
-    complete();
+    complete(success);
 
     return;
   }
 
-  complete();
+  const success = true;
+
+  complete(success);
 }

@@ -2,12 +2,15 @@
 
 import { arrayUtilities } from "necessary";
 
+import Runnable from "../runnable";
+
 const { push } = arrayUtilities;
 
-export default class Suite {
-  constructor(description, parentSuite, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks) {
+export default class Suite extends Runnable {
+  constructor(parentSuite, description, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks) {
+    super(parentSuite);
+
     this.description = description;
-    this.parentSuite = parentSuite;
     this.suites = suites;
     this.tests = tests;
     this.afterHooks = afterHooks;
@@ -18,10 +21,6 @@ export default class Suite {
 
   getDescription() {
     return this.description;
-  }
-
-  getParentSuite() {
-    return this.parentSuite;
   }
 
   getSuites() {
@@ -43,16 +42,20 @@ export default class Suite {
   getAfterEachHooks(afterEachHooks = []) {
     push(afterEachHooks, this.afterEachHooks);
 
-    if (this.parentSuite !== null) {
-      this.parentSuite.getAfterEachHooks(afterEachHooks);
+    const parentSuite = this.getParentSuite();
+
+    if (parentSuite !== null) {
+      parentSuite.getAfterEachHooks(afterEachHooks);
     }
 
     return afterEachHooks;
   }
 
   getBeforeEachHooks(beforeEachHooks = []) {
-    if (this.parentSuite !== null) {
-      this.parentSuite.getBeforeEachHooks(beforeEachHooks);
+    const parentSuite = this.getParentSuite();
+
+    if (parentSuite !== null) {
+      parentSuite.getBeforeEachHooks(beforeEachHooks);
     }
 
     push(beforeEachHooks, this.beforeEachHooks);
@@ -85,27 +88,27 @@ export default class Suite {
   }
 
   static fromNothing() {
-    const description = null,
-          parentSuite = null,
+    const parentSuite = null,
+          description = null,
           suites = [],
           tests = [],
           afterHooks = [],
           beforeHooks = [],
           afterEachHooks = [],
           beforeEachHooks = [],
-          suite = new Suite(description, parentSuite, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
+          suite = new Suite(parentSuite, description, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
 
     return suite;
   }
 
-  static fromDescriptionAndParentSuite(description, parentSuite) {
+  static fromParentSuiteAndDescription(parentSuite, description) {
     const suites = [],
           tests = [],
           afterHooks = [],
           beforeHooks = [],
           afterEachHooks = [],
           beforeEachHooks = [],
-          suite = new Suite(description, parentSuite, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
+          suite = new Suite(parentSuite, description, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
 
     return suite;
   }

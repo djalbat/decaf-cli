@@ -1,6 +1,6 @@
 "use strict";
 
-import Suite from "../suite";
+import Suite from "../runnable/suite";
 
 export default function describe(description, callback, context) {
   let currentSuite;
@@ -8,7 +8,7 @@ export default function describe(description, callback, context) {
   ({ currentSuite } = context);
 
   const parentSuite = currentSuite, ///
-        suite = Suite.fromDescriptionAndParentSuite(description, parentSuite);
+        suite = Suite.fromParentSuiteAndDescription(parentSuite, description);
 
   currentSuite.addSuite(suite);
 
