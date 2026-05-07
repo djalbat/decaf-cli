@@ -29,8 +29,34 @@ export default class Suite extends Runnable {
     return this.skipped;
   }
 
-  isFocused() {
-    return this.focused;
+  isFocused(focused = false, recursive = false) {
+    if (recursive === false) {
+      focused = this.focused;
+    } else {
+      focused = focused || this.focused;
+
+      if (!focused) {
+        this.suites.some((suite) => {
+          focused = suite.isFocused(focused);
+
+          if (focused) {
+            return true;
+          }
+        });
+      }
+
+      if (!focused) {
+        this.tests.some((test) => {
+          focused = test.isFocused();
+
+          if (focused) {
+            return true;
+          }
+        });
+      }
+    }
+
+    return focused;
   }
 
   getSuites() {

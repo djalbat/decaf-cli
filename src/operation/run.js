@@ -12,10 +12,12 @@ export default function runOperation(proceed, abort, context) {
   const { rootSuite } = context,
         suite = rootSuite,  ///
         success = true,
+        focused = rootSuite.isFocused(),
         reporter = Reporter.fromNothing();
 
   Object.assign(context, {
     success,
+    focused,
     reporter
   });
 
@@ -23,6 +25,10 @@ export default function runOperation(proceed, abort, context) {
     const { success } = context;
 
     reporter.summarise();
+
+    delete context.success;
+    delete context.focused;
+    delete context.reporter;
 
     success ?
       proceed() :
@@ -55,10 +61,34 @@ function runSuite(suite, next, done, context) {
     return;
   }
 
+  const { focused } = context;
+
+  if (focused) {
+    const suiteFocused = suite.isFocused();
+
+    if (!suiteFocused) {
+      next();
+
+      return;
+    } else {
+      const focused = false,
+            recursive = false,
+            suiteFocused = suite.isFocused(focused, recursive);
+
+      if (suiteFocused) {
+        const focused = false;  ///
+
+        Object.assign(context, {
+          focused
+        });
+      }
+    }
+  }
+
   const operations = [
     (next, done, context) => { executeBeforeHooks(suite, next, done, context); },
     (next, done, context) => { runTests(suite, next, done, context); },
-    (next, done, context) => { runChildSuites(suite, next, done, context); },
+    (next, done, context) => { runSuites(suite, next, done, context); },
     (next, done, context) => { executeAfterHooks(suite, next, done, context); }
   ];
 
@@ -69,8 +99,56 @@ function runSuite(suite, next, done, context) {
   sequence(operations, () => {
     reporter.suiteFinished(suite);
 
+    Object.assign(context, {
+      focused
+    });
+
     next();
   }, context);
+}
+
+function runTests(suite, next, done, context) {
+  const failedFast = failOrContinue(next, done, context);
+
+  if (failedFast) {
+    return;
+  }
+
+  let tests = suite.getTests();
+
+  const { focused } = context;
+
+  if (focused) {
+    const suiteFocused = suite.isFocused();
+
+    if (!suiteFocused) {
+      next();
+
+      return;
+    } else {
+      const focusedTest = tests.find((test) => {
+        const testFocused = test.isFocused();
+
+        if (testFocused) {
+          return true;
+        }
+      }) || null;
+
+      if (focusedTest !== null) {
+        const test = focusedTest; ///
+
+        tests = [
+          test
+        ];
+      }
+    }
+  }
+
+  done = next;  ///
+
+  forEach(tests, (test, next, done, context) => {
+    runTest(suite, test, next, done, context);
+  }, done, context);
 }
 
 function runTest(suite, test, next, done, context) {
@@ -119,23 +197,7 @@ function runTest(suite, test, next, done, context) {
   }, context);
 }
 
-function runTests(suite, next, done, context) {
-  const failedFast = failOrContinue(next, done, context);
-
-  if (failedFast) {
-    return;
-  }
-
-  const tests = suite.getTests();
-
-  done = next;  ///
-
-  forEach(tests, (test, next, done, context) => {
-    runTest(suite, test, next, done, context);
-  }, done, context);
-}
-
-function runChildSuites(suite, next, done, context) {
+function runSuites(suite, next, done, context) {
   const failedFast = failOrContinue(next, done, context);
 
   if (failedFast) {

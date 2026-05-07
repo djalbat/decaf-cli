@@ -12,26 +12,40 @@ import before from "../collect/before";
 import afterEach from "../collect/afterEach";
 import beforeEach from "../collect/beforeEach";
 
-it.only = fit;
-it.skip = xit;
-
-describe.only = fdescribe;
-describe.skip = xdescribe;
+import { SKIP,
+         ONLY,
+         ASSERT,
+         DESCRIBE,
+         FDESCRIBE,
+         XDESCRIBE,
+         IT,
+         FIT,
+         XIT,
+         AFTER,
+         BEFORE,
+         AFTER_EACH,
+         BEFORE_EACH } from "../properties";
 
 export default function assignOperation(proceed, abort, context) {
   Object.assign(globalThis, {
-    "assert" : assert,
-    "describe" : (description, callback) => { describe(description, callback, context); },
-    "fdescribe" : (description, callback) => { fdescribe(description, callback, context); },
-    "xdescribe" : (description, callback) => { xdescribe(description, callback, context); },
-    "it" : (description, callback) => { it(description, callback, context); },
-    "fit" : (description, callback) => { fit(description, callback, context); },
-    "xit" : (description, callback) => { xit(description, callback, context); },
-    "after" : (callback) => { after(callback, context); },
-    "before" : (callback) => { before(callback, context); },
-    "afterEach" : (callback) => { afterEach(callback, context); },
-    "beforeEach" : (callback) => { beforeEach(callback, context); },
+    [ASSERT] : assert,
+    [DESCRIBE] : (description, callback) => { describe(description, callback, context); },
+    [FDESCRIBE] : (description, callback) => { fdescribe(description, callback, context); },
+    [XDESCRIBE] : (description, callback) => { xdescribe(description, callback, context); },
+    [IT] : (description, callback) => { it(description, callback, context); },
+    [FIT] : (description, callback) => { fit(description, callback, context); },
+    [XIT] : (description, callback) => { xit(description, callback, context); },
+    [AFTER] : (callback) => { after(callback, context); },
+    [BEFORE] : (callback) => { before(callback, context); },
+    [AFTER_EACH] : (callback) => { afterEach(callback, context); },
+    [BEFORE_EACH] : (callback) => { beforeEach(callback, context); },
   });
+
+  globalThis[IT][SKIP] = globalThis[XIT];
+  globalThis[IT][ONLY] = globalThis[FIT];
+
+  globalThis[DESCRIBE][SKIP] = globalThis[XDESCRIBE];
+  globalThis[DESCRIBE][ONLY] = globalThis[FDESCRIBE];
 
   proceed();
 }
