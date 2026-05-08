@@ -2,6 +2,9 @@
 
 Caffeine free tests and assertions.
 
+Decaf is inspired by [Mocha](https://mochajs.org/) and [Chhi](https://www.chaijs.com/).
+It is simpler under the hoood, however, and therefore runs more quickly and has far fewer dependencies.
+
 ## Installation
 
 You can install Watchful via [npm](https://www.npmjs.com/):
@@ -18,7 +21,48 @@ If you would like to contribute or would simply like to have a look at the code,
 ...then install the dependencies with npm from within the project's root directory:
 
     npm install
-     
+
+## Usage
+
+Watchful has the following commands and options:
+
+```
+  decaf [<options>] [<command>] [<argument>] 
+
+Commands:
+
+  help                                           Show this help
+
+  version                                        Show the version
+  
+  test                                           Run the tests
+  
+Arguments:
+
+  test-directory                                 The tests directory
+  
+Options:
+
+  --version|-v                                   Show the version
+
+  --help|-h                                      Show this help
+
+  --fail-fast|-f                                 Exit on the first failure
+```
+
+There is really only one use case, namely running the tests.
+
+In order to do so, run the following command:
+
+    decaf test/
+
+Here it is assumed that the test directory is called `test/`.
+Note that there is no need to specify the `test` command.
+
+The only option to use when running tests is `fail-fast`, which will cause Decaf to exit the first time a test fails.
+
+Note that Decaf will return a zero exit code upon success and a non-zero exit code upon failure.
+
 ## Contact
 
 * james.smith@djalbat.com
