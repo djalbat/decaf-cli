@@ -7,8 +7,8 @@ import Runnable from "../runnable";
 const { push } = arrayUtilities;
 
 export default class Suite extends Runnable {
-  constructor(parentSuite, description, skipped, focused, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks) {
-    super(parentSuite);
+  constructor(error, parentSuite, description, skipped, focused, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks) {
+    super(error, parentSuite);
 
     this.description = description;
     this.skipped = skipped;
@@ -164,7 +164,8 @@ export default class Suite extends Runnable {
   }
 
   static fromParentSuiteAndDescription(parentSuite, description) {
-    const skipped = false,
+    const error = null,
+          skipped = false,
           focused = false,
           suites = [],
           tests = [],
@@ -172,33 +173,35 @@ export default class Suite extends Runnable {
           beforeHooks = [],
           afterEachHooks = [],
           beforeEachHooks = [],
-          suite = new Suite(parentSuite, description, skipped, focused, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
+          suite = new Suite(error, parentSuite, description, skipped, focused, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
 
     return suite;
   }
 
   static fromParentSuitDescriptionAndSkipped(parentSuite, description, skipped) {
-    const focused = false,
+    const error = null,
+          focused = false,
           suites = [],
           tests = [],
           afterHooks = [],
           beforeHooks = [],
           afterEachHooks = [],
           beforeEachHooks = [],
-          suite = new Suite(parentSuite, description, skipped, focused, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
+          suite = new Suite(error, parentSuite, description, skipped, focused, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
 
     return suite;
   }
 
   static fromParentSuitDescriptionAndFocused(parentSuite, description, focused) {
-    const skipped = false,
+    const error = null,
+          skipped = false,
           suites = [],
           tests = [],
           afterHooks = [],
           beforeHooks = [],
           afterEachHooks = [],
           beforeEachHooks = [],
-          suite = new Suite(parentSuite, description, skipped, focused, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
+          suite = new Suite(error, parentSuite, description, skipped, focused, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
 
     return suite;
   }

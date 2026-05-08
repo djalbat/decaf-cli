@@ -11,8 +11,7 @@ import retrieveFilePathsOperation from "../operation/retrieveFilePaths";
 import { TEST_RUN_FAILED_MESSAGE } from "../messages";
 
 export default function testAction(testDirectoryName, failFast) {
-  const failed = false,
-        Reporter = TerminalReporter,  ///
+  const Reporter = TerminalReporter,  ///
         operations = [
           retrieveFilePathsOperation,
           assignOperation,
@@ -21,19 +20,16 @@ export default function testAction(testDirectoryName, failFast) {
         ],
         currentWorkingDirectoryPath = process.cwd(),
         context = {
-          failed,
           Reporter,
           failFast,
           testDirectoryName,
           currentWorkingDirectoryPath
         };
 
-  action(operations, () => {
+  action(operations, (success) => {
     let exitCode = 0;
 
-    const { failed } = context;
-
-    if (failed) {
+    if (!success) {
       console.log(TEST_RUN_FAILED_MESSAGE);
 
       exitCode += 1;

@@ -3,8 +3,8 @@
 import Runnable from "../runnable";
 
 export default class Test extends Runnable{
-  constructor(parentSuite, description, skipped, focused, callback) {
-    super(parentSuite);
+  constructor(error, parentSuite, description, skipped, focused, callback) {
+    super(error, parentSuite);
 
     this.description = description;
     this.skipped = skipped;
@@ -29,26 +29,29 @@ export default class Test extends Runnable{
   }
 
   static fromParentSuiteDescriptionAndSkipped(parentSuite, description, skipped) {
-    const focused = false,
+    const error = null,
+          focused = false,
           callback = null,
-          test = new Test(parentSuite, description, skipped, focused, callback);
+          test = new Test(error, parentSuite, description, skipped, focused, callback);
 
     return test;
   }
 
   static fromParentSuiteDescriptionAndFocused(parentSuite, description, focused) {
-    const skipped = false,
+    const error = null,
+          skipped = false,
           callback = null,
-          test = new Test(parentSuite, description, skipped, focused, callback);
+          test = new Test(error, parentSuite, description, skipped, focused, callback);
 
     return test;
 
   }
 
   static fromParentSuiteDescriptionAndCallback(parentSuite, description, callback) {
-    const focused = false,
+    const error = null,
+          focused = false,
           skipped = false,
-          test = new Test(parentSuite, description, skipped, focused, callback);
+          test = new Test(error, parentSuite, description, skipped, focused, callback);
 
     return test;
   }

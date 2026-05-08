@@ -1,12 +1,39 @@
 "use strict";
 
 export default class Runnable {
-  constructor(parentSuite) {
+  constructor(error, parentSuite) {
+    this.error = error;
     this.parentSuite = parentSuite;
+  }
+
+  getError() {
+    return this.error;
   }
 
   getParentSuite() {
     return this.parentSuite;
+  }
+
+  getMessage() {
+    let message = null;
+
+    if (this.error !== null) {
+      ({ message } = this.error)
+    }
+
+    return message;
+  }
+
+  getDetails() {
+    let details = null;
+
+    if (this.error !== null) {
+      const { stack } = this.error;
+
+      details = stack;  ///
+    }
+
+    return details;
   }
 
   getDepth() {
@@ -21,5 +48,13 @@ export default class Runnable {
     }
 
     return depth;
+  }
+
+  setError(error) {
+    this.error = error;
+  }
+
+  setParentSuite(parentSuite) {
+    this.parentSuite = parentSuite;
   }
 }

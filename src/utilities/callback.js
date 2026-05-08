@@ -7,15 +7,15 @@ import { CALLBACK_CALLED_TWICE_MESSAGE } from "../messages";
 export function failOrContinue(next, done, context) {
   let failedFast = false;
 
-  const { success } = context;
+  const { error } = context;
 
-  if (!success) {
+  if (error) {
     const { failFast } = context;
 
     if (failFast) {
       failedFast = true;
 
-      done();
+      next();
     }
   }
 
@@ -25,55 +25,52 @@ export function failOrContinue(next, done, context) {
 export function executeCallback(callback, next, done, context) {
   let completed = false;
 
-  const complete = (success) => {
+  const complete = (error) => {
+    if (error) {
+      console.error(error);
+    }
+
     if (completed) {
       console.log(CALLBACK_CALLED_TWICE_MESSAGE);
 
       return;
     }
 
-    completed = true;
-
     process.removeListener(UNCAUGHT_EXCEPTION, uncaughtExceptionListener);
 
-    let failed;
+    completed = true;
 
-    ({ failed } = context);
+    if (error) {
+      const success = false;
 
-    failed = failed || !success;  ///
+      Object.assign(context, {
+        success
+      });
 
-    Object.assign(context, {
-      failed,
-      success
-    });
+      const { error: existingError = null } = context;
+
+      if (existingError === null) {
+        Object.assign(context, {
+          error
+        });
+      }
+    }
 
     next();
   }
 
   const uncaughtExceptionListener = (error) => {
-    const success = false;
-
-    console.error(error);
-
-    complete(success);
+    complete(error);
   };
 
   process.addListener(UNCAUGHT_EXCEPTION, uncaughtExceptionListener);
 
-  const length = callback.length;
-
   try {
+    const length = callback.length;
+
     if (length > 0) {
-      callback((error) => {
-        let success = true;
-
-        if (error) {
-          success = false;
-
-          console.error(error);
-        }
-
-        complete(success);
+      callback((error = null) => {
+        complete(error);
       });
 
       return;
@@ -85,31 +82,23 @@ export function executeCallback(callback, next, done, context) {
     if (resultPromise) {
       result
         .then(() => {
-          const success = true;
+          const error = null;
 
-          complete(success);
+          complete(error);
         })
         .catch((error) => {
-          const success = false;
-
-          console.error(error);
-
-          complete(success);
+          complete(error);
         });
 
       return;
     }
   } catch (error) {
-    const success = false;
-
-    console.error(error);
-
-    complete(success);
+    complete(error);
 
     return;
   }
 
-  const success = true;
+  const error = null;
 
-  complete(success);
+  complete(error);
 }

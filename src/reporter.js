@@ -87,9 +87,11 @@ export default class Reporter {
     this.consoleLog(runnable, eventName);
   }
 
-  testFailed(test) {
+  testFailed(test, error) {
     const runnable = test, ///
           eventName = TEST_FAILED_EVENT_NAME;
+
+    runnable.setError(error);
 
     this.failedCount += 1;
 

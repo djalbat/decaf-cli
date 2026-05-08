@@ -3,8 +3,8 @@
 import Runnable from "../runnable";
 
 export default class Hook extends Runnable {
-  constructor(parentSuite, callback) {
-    super(parentSuite);
+  constructor(error, parentSuite, callback) {
+    super(error, parentSuite);
 
     this.callback = callback;
   }
@@ -14,7 +14,8 @@ export default class Hook extends Runnable {
   }
 
   static fromParentSuiteAndCallback(parentSuite, callback) {
-    const hook = new Hook(parentSuite, callback);
+    const error = null,
+          hook = new Hook(error, parentSuite, callback);
 
     return hook;
   }

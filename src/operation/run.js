@@ -175,10 +175,10 @@ function runTest(suite, test, next, done, context) {
     return;
   }
 
-  const success = true;
+  const error = null;
 
   Object.assign(context, {
-    success
+    error
   });
 
   const operations = [
@@ -190,11 +190,11 @@ function runTest(suite, test, next, done, context) {
   reporter.testStarted(test);
 
   sequence(operations, () => {
-    const { success } = context;
+    const { error } = context;
 
-    success ?
-      reporter.testSuccessful(test) :
-        reporter.testFailed(test);
+    error ?
+      reporter.testFailed(test, error) :
+        reporter.testSuccessful(test);
 
     next();
   }, context);
@@ -217,12 +217,6 @@ function runSuites(suite, next, done, context) {
 }
 
 function executeAfterHooks(suite, next, done, context) {
-  const failedFast = failOrContinue(next, done, context);
-
-  if (failedFast) {
-    return;
-  }
-
   const afterHooks = suite.getAfterHooks();
 
   done = next;  ///
@@ -245,12 +239,6 @@ function executeBeforeHooks(suite, next, done, context) {
 }
 
 function executeAfterEachHooks(suite, next, done, context) {
-  const failedFast = failOrContinue(next, done, context);
-
-  if (failedFast) {
-    return;
-  }
-
   const afterEachHooks = suite.getAfterEachHooks();
 
   done = next;  ///
@@ -273,24 +261,12 @@ function executeBeforeEachHooks(suite, next, done, context) {
 }
 
 function executeHook(hook, next, done, context) {
-  const failedFast = failOrContinue(next, done, context);
-
-  if (failedFast) {
-    return;
-  }
-
   const callback = hook.getCallback();
 
   executeCallback(callback, next, done, context);
 }
 
 function executeTest(test, next, done, context) {
-  const failedFast = failOrContinue(next, done, context);
-
-  if (failedFast) {
-    return;
-  }
-
   const callback = test.getCallback();
 
   executeCallback(callback, next, done, context)

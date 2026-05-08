@@ -46,10 +46,10 @@ export default class TerminalReporter extends Reporter {
     super.testSuccessful(test);
   }
 
-  testFailed(test) {
+  testFailed(test, error) {
     this.pendingStop();
 
-    super.testFailed(test);
+    super.testFailed(test, error);
   }
 
   pendingStart(test) {
