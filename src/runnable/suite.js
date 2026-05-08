@@ -29,7 +29,7 @@ export default class Suite extends Runnable {
     return this.skipped;
   }
 
-  isFocused(focused = false, recursive = false) {
+  isFocused(focused = false, recursive = true) {
     if (recursive === false) {
       focused = this.focused;
     } else {
@@ -105,6 +105,22 @@ export default class Suite extends Runnable {
     push(beforeEachHooks, this.beforeEachHooks);
 
     return beforeEachHooks;
+  }
+
+  isStrictlyFocused() {
+    let strictlyFocused = false;
+
+    const recursive = false;
+
+    let focused = false;
+
+    focused = this.isFocused(focused, recursive);
+
+    if (focused) {
+      strictlyFocused = true;
+    }
+
+    return strictlyFocused;
   }
 
   addSuite(suite) {

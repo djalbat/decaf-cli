@@ -49,12 +49,15 @@ function runSuite(suite, next, done, context) {
     return;
   }
 
-  const skipped = suite.isSkipped();
+  const { reporter } = context,
+        suiteSkipped = suite.isSkipped();
 
-  if (skipped) {
-    const { reporter } = context;
+  if (suiteSkipped) {
+    const { focused } = context;
 
-    reporter.suiteSkipped(suite);
+    if (!focused) {
+      reporter.suiteSkipped(suite);
+    }
 
     next();
 
@@ -71,11 +74,9 @@ function runSuite(suite, next, done, context) {
 
       return;
     } else {
-      const focused = false,
-            recursive = false,
-            suiteFocused = suite.isFocused(focused, recursive);
+      const suiteStricltyFocused = suite.isStrictlyFocused();
 
-      if (suiteFocused) {
+      if (suiteStricltyFocused) {
         const focused = false;  ///
 
         Object.assign(context, {
@@ -91,8 +92,6 @@ function runSuite(suite, next, done, context) {
     (next, done, context) => { runSuites(suite, next, done, context); },
     (next, done, context) => { executeAfterHooks(suite, next, done, context); }
   ];
-
-  const { reporter } = context;
 
   reporter.suiteStarted(suite);
 
@@ -158,12 +157,15 @@ function runTest(suite, test, next, done, context) {
     return;
   }
 
-  const skipped = test.isSkipped();
+  const { reporter } = context,
+        testSkipped = test.isSkipped();
 
-  if (skipped) {
-    const { reporter } = context;
+  if (testSkipped) {
+    const { focused } = context;
 
-    reporter.testSkipped(test);
+    if (!focused) {
+      reporter.testSkipped(test);
+    }
 
     next();
 
@@ -181,8 +183,6 @@ function runTest(suite, test, next, done, context) {
     (next, done, context) => { executeTest(test, next, done, context); },
     (next, done, context) => { executeAfterEachHooks(suite, next, done, context); }
   ];
-
-  const { reporter } = context;
 
   reporter.testStarted(test);
 
