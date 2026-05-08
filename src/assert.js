@@ -50,6 +50,14 @@ export function isEmpty(array) {
   throw new Error(`The '${formatValue(value)}' array is not empty.`);
 }
 
+export function isArray(value) {
+  if (Array.isArray(value)) {
+    return;
+  }
+
+  throw new Error(`The '${formatValue(value)}' value is not an array.`);
+}
+
 export function isObject(value) {
   if (Object.prototype.toString.call(value) === OBJECT_OBJECT) {
     return;
@@ -126,6 +134,14 @@ export function isNotEmpty(array) {
   throw new Error(`The '${formatValue(value)}' array is empty.`);
 }
 
+export function isNotArray(value) {
+  if (!Array.isArray(value)) {
+    return;
+  }
+
+  throw new Error(`The '${formatValue(value)}' value is an array.`);
+}
+
 export function isNotObject(value) {
   if (Object.prototype.toString.call(value) !== OBJECT_OBJECT) {
     return;
@@ -184,6 +200,7 @@ export default {
   isNaN,
   isNull,
   isEmpty,
+  isArray,
   isObject,
   isString,
   isNumber,
@@ -193,6 +210,7 @@ export default {
   isNotNaN,
   isNotNull,
   isNotEmpty,
+  isNotArray,
   isNotObject,
   isNotString,
   isNotNumber,
