@@ -8,7 +8,7 @@ export default class Test extends Runnable{
 
     this.description = description;
     this.skipped = skipped;
-    this.skipped = skipped;
+    this.focused = focused;
     this.callback = callback;
   }
 
@@ -37,18 +37,17 @@ export default class Test extends Runnable{
     return test;
   }
 
-  static fromParentSuiteDescriptionAndFocused(parentSuite, description, focused) {
+  static fromParentSuiteDescriptionAndCallback(parentSuite, description, callback) {
     const error = null,
+          focused = false,
           skipped = false,
-          callback = null,
           test = new Test(error, parentSuite, description, skipped, focused, callback);
 
     return test;
   }
 
-  static fromParentSuiteDescriptionAndCallback(parentSuite, description, callback) {
+  static fromParentSuiteDescriptionFocusedAndCallback(parentSuite, description, focused, callback) {
     const error = null,
-          focused = false,
           skipped = false,
           test = new Test(error, parentSuite, description, skipped, focused, callback);
 

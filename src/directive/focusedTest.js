@@ -6,7 +6,7 @@ export default function focusedTestDirective(description, callback, context) {
   const { currentSuite } = context,
         parentSuite = currentSuite, ///
         focused = true,
-        test = Test.fromParentSuiteDescriptionAndFocused(parentSuite, description, focused);
+        test = Test.fromParentSuiteDescriptionFocusedAndCallback(parentSuite, description, focused, callback);
 
   currentSuite.addTest(test);
 }
