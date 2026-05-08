@@ -4,6 +4,7 @@ import { asynchronousUtilities } from "necessary";
 
 import Reporter from "../reporter";
 
+import { hideCursor, showCursor } from "../utilities/terminal";
 import { executeCallback, failOrContinue } from "../utilities/callback";
 
 const { sequence, forEach } = asynchronousUtilities;
@@ -21,6 +22,8 @@ export default function runOperation(proceed, abort, context) {
     reporter
   });
 
+  hideCursor();
+
   runSuite(suite, () => {
     const { success } = context;
 
@@ -29,6 +32,8 @@ export default function runOperation(proceed, abort, context) {
     delete context.success;
     delete context.focused;
     delete context.reporter;
+
+    showCursor();
 
     success ?
       proceed() :
