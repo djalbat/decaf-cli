@@ -1,7 +1,6 @@
 "use strict";
 
 import action from "../action";
-import IDEReporter from "../reporter/ide";
 import runOperation from "../operation/run";
 import assignOperation from "../operation/assign";
 import collectOperation from "../operation/collect";
