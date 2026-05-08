@@ -1,15 +1,18 @@
 "use strict";
 
 import action from "../action";
+import IDEReporter from "../reporter/ide";
 import runOperation from "../operation/run";
 import assignOperation from "../operation/assign";
 import collectOperation from "../operation/collect";
+import TerminalReporter from "../reporter/terminal";
 import retrieveFilePathsOperation from "../operation/retrieveFilePaths";
 
 import { TEST_RUN_FAILED_MESSAGE } from "../messages";
 
 export default function testAction(testDirectoryName, failFast) {
   const failed = false,
+        Reporter = TerminalReporter,  ///
         operations = [
           retrieveFilePathsOperation,
           assignOperation,
@@ -19,6 +22,7 @@ export default function testAction(testDirectoryName, failFast) {
         currentWorkingDirectoryPath = process.cwd(),
         context = {
           failed,
+          Reporter,
           failFast,
           testDirectoryName,
           currentWorkingDirectoryPath

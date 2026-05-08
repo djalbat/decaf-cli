@@ -1,25 +1,18 @@
 "use strict";
 
-import { offsetConsoleLog } from "./utilities/terminal";
-import { DOUBLE_SPACE, PENDING_DELAY } from "./constants";
-import { red, cyan, green, strikethrough } from "./utilities/effects";
-import { SUCCESS_ICON, FAILURE_ICON, PENDING_ICONS, PENDING_ICONS_LENGTH } from "./icons"
+import { red, cyan, green } from "./utilities/effects";
+import { TEST_FAILED_EVENT_NAME,
+         TEST_IGNORED_EVENT_NAME,
+         TEST_STARTED_EVENT_NAME,
+         TEST_FINISHED_EVENT_NAME,
+         TEST_SUITE_STARTED_EVENT_NAME,
+         TEST_SUITE_FINISHED_EVENT_NAME } from "./eventNames";
 
 export default class Reporter {
-  constructor(index, interval, failedCount, skippedCount, successfulCount) {
-    this.index = index;
-    this.interval = interval;
+  constructor(failedCount, skippedCount, successfulCount) {
     this.failedCount = failedCount;
     this.skippedCount = skippedCount;
     this.successfulCount = successfulCount;
-  }
-
-  getIndex() {
-    return this.index;
-  }
-
-  getInterval() {
-    return this.interval;
   }
 
   getFailedCount() {
@@ -35,144 +28,103 @@ export default class Reporter {
   }
 
   suiteStarted(suite) {
-    const depth = suite.getDepth(),
-          description = suite.getDescription();
+    const description = suite.getDescription();
 
     if (description === null) {
       return;
     }
 
-    this.consoleLog(description, depth);
+    const runnable = suite, ///
+          eventName = TEST_SUITE_STARTED_EVENT_NAME;
+
+    this.consoleLog(runnable, eventName);
   }
 
   suiteFinished(suite) {
-    ///
-  }
+    const description = suite.getDescription();
 
-  testStarted(test) {
-    this.pendingStart(test);
-  }
+    if (description === null) {
+      return;
+    }
 
-  testSuccessful(test) {
-    const icon = SUCCESS_ICON,
-          depth = test.getDepth(),
-          description = test.getDescription();
+    const runnable = suite, ///
+          eventName = TEST_SUITE_FINISHED_EVENT_NAME;
 
-    this.successfulCount += 1;
-
-    this.pendingStop()
-
-    this.offsetConsoleLog(description, depth, icon);
-  }
-
-  testFailed(test) {
-    const icon = FAILURE_ICON,
-      depth = test.getDepth(),
-      description = test.getDescription();
-
-    this.failedCount += 1;
-
-    this.pendingStop()
-
-    this.offsetConsoleLog(description, depth, icon);
-  }
-
-  testSkipped(test) {
-    const depth = test.getDepth(),
-          description = test.getDescription();
-
-    this.skippedCount += 1;
-
-    this.offsetConsoleLog(strikethrough(description), depth);
+    this.consoleLog(runnable, eventName);
   }
 
   suiteSkipped(suite) {
-    const tests = [],
-          recursive = true;
+    const runnable = suite, ///
+          eventName = TEST_IGNORED_EVENT_NAME;
 
-    suite.getTests(tests, recursive);
+    this.consoleLog(runnable, eventName);
 
-    const depth = suite.getDepth(),
-          description = suite.getDescription(),
-          testsLength = tests.length;
+    const tests = suite.getTests(),
+          suites = suite.getSuites();
 
-    this.skippedCount += testsLength;
+    tests.forEach((test) => {
+      this.testSkipped(test);
+    });
 
-    this.offsetConsoleLog(cyan(strikethrough(description)), depth);
+    suites.forEach((suite) => {
+      this.suiteSkipped(suite);
+    });
   }
 
-  pendingUpdate(test, initial = false) {
-    const icon = PENDING_ICONS[this.index],
-          depth = test.getDepth(),
-          description = test.getDescription();
+  testStarted(test) {
+    const runnable = test, ///
+          eventName = TEST_STARTED_EVENT_NAME;
 
-    initial ?
-      this.consoleLog(description, depth, icon) :
-        this.offsetConsoleLog(description, depth, icon);
-
-    this.index += 1;
-
-    this.index %= PENDING_ICONS_LENGTH;
+    this.consoleLog(runnable, eventName);
   }
 
-  pendingStart(test) {
-    const delay = PENDING_DELAY,
-          initial = true;
+  testSuccessful(test) {
+    const runnable = test, ///
+          eventName = TEST_FINISHED_EVENT_NAME;
 
-    this.pendingUpdate(test, initial);
+    this.successfulCount += 1;
 
-    this.interval = setInterval(() => {
-      this.pendingUpdate(test);
-    }, delay);
+    this.consoleLog(runnable, eventName);
   }
 
-  pendingStop() {
-    clearInterval(this.interval);
+  testFailed(test) {
+    const runnable = test, ///
+          eventName = TEST_FAILED_EVENT_NAME;
 
-    this.index = 0;
+    this.failedCount += 1;
 
-    this.interval = null;
+    this.consoleLog(runnable, eventName);
+  }
+
+  testSkipped(test) {
+    const runnable = test, ///
+          eventName = TEST_IGNORED_EVENT_NAME;
+
+    this.skippedCount += 1;
+
+    this.consoleLog(runnable, eventName);
   }
 
   summarise() {
     const totalCount = this.failedCount + this.skippedCount + this.successfulCount;
 
-    console.log();
-
-    console.log(`A total of ${totalCount} tests ran with ${red(this.failedCount)} failures, ${cyan(this.skippedCount)} skipped and ${green(this.successfulCount)} successes.`);
+    this.simpleConsoleLog(`A total of ${totalCount} tests ran with ${red(this.failedCount)} failures, ${cyan(this.skippedCount)} skipped and ${green(this.successfulCount)} successes.`);
   }
 
-  consoleLog(description, depth, icon = null) {
-    const padding = paddingFromDepth(depth);
-
-    (icon !== null) ?
-      console.log(`${padding}${description} ${icon}`) :
-        console.log(`${padding}${description}`);
+  consoleLog(runnable, eventName) {
+    ///
   }
 
-  offsetConsoleLog(description, depth, icon = null) {
-    const offset = 1,
-          padding = paddingFromDepth(depth);
-
-    (icon !== null) ?
-      offsetConsoleLog(`${padding}${description} ${icon}`, offset) :
-        offsetConsoleLog(`${padding}${description}`, offset);
+  simpleConsoleLog(message) {
+    ///
   }
 
-  static fromNothing() {
-    const index = 0,
-          interval = null,
-          failedCount = 0,
+  static fromNothing(Class, ...remainingArguments) {
+    const failedCount = 0,
           skippedCount = 0,
           successfulCount = 0,
-          reporter = new Reporter(index, interval, failedCount, skippedCount, successfulCount);
+          reporter = new Class(failedCount, skippedCount, successfulCount, ...remainingArguments);
 
     return reporter;
   }
-}
-
-function paddingFromDepth(depth) {
-  const padding = DOUBLE_SPACE.repeat(depth);
-
-  return padding;
 }

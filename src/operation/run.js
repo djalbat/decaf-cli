@@ -2,15 +2,13 @@
 
 import { asynchronousUtilities } from "necessary";
 
-import Reporter from "../reporter";
-
 import { hideCursor, showCursor } from "../utilities/terminal";
 import { executeCallback, failOrContinue } from "../utilities/callback";
 
 const { sequence, forEach } = asynchronousUtilities;
 
 export default function runOperation(proceed, abort, context) {
-  const { rootSuite } = context,
+  const { rootSuite, Reporter } = context,
         suite = rootSuite,  ///
         success = true,
         focused = rootSuite.isFocused(),

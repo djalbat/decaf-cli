@@ -24,21 +24,21 @@ import { SKIP,
          AFTER,
          BEFORE,
          AFTER_EACH,
-         BEFORE_EACH } from "../properties";
+         BEFORE_EACH, } from "../propertyNames";
 
 export default function assignOperation(proceed, abort, context) {
   Object.assign(globalThis, {
-    [ASSERT] : assert,
-    [DESCRIBE] : (description, callback) => { describe(description, callback, context); },
-    [FDESCRIBE] : (description, callback) => { fdescribe(description, callback, context); },
-    [XDESCRIBE] : (description, callback) => { xdescribe(description, callback, context); },
-    [IT] : (description, callback) => { it(description, callback, context); },
-    [FIT] : (description, callback) => { fit(description, callback, context); },
-    [XIT] : (description, callback) => { xit(description, callback, context); },
-    [AFTER] : (callback) => { after(callback, context); },
-    [BEFORE] : (callback) => { before(callback, context); },
-    [AFTER_EACH] : (callback) => { afterEach(callback, context); },
-    [BEFORE_EACH] : (callback) => { beforeEach(callback, context); },
+    [ASSERT]: assert,
+    [DESCRIBE]: (description, callback) => { describe(description, callback, context); },
+    [FDESCRIBE]: (description, callback) => { fdescribe(description, callback, context); },
+    [XDESCRIBE]: (description, callback) => { xdescribe(description, callback, context); },
+    [IT]: (description, callback) => { it(description, callback, context); },
+    [FIT]: (description, callback) => { fit(description, callback, context); },
+    [XIT]: (description, callback) => { xit(description, callback, context); },
+    [AFTER]: (callback) => { after(callback, context); },
+    [BEFORE]: (callback) => { before(callback, context); },
+    [AFTER_EACH]: (callback) => { afterEach(callback, context); },
+    [BEFORE_EACH]: (callback) => { beforeEach(callback, context); },
   });
 
   globalThis[IT][SKIP] = globalThis[XIT];
