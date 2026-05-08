@@ -148,7 +148,8 @@ export default class Suite extends Runnable {
   }
 
   static fromNothing() {
-    const parentSuite = null,
+    const error = null,
+          parentSuite = null,
           description = null,
           skipped = false,
           focused = false,
@@ -158,7 +159,7 @@ export default class Suite extends Runnable {
           beforeHooks = [],
           afterEachHooks = [],
           beforeEachHooks = [],
-          suite = new Suite(parentSuite, description, skipped, focused, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
+          suite = new Suite(error, parentSuite, description, skipped, focused, suites, tests, afterHooks, beforeHooks, afterEachHooks, beforeEachHooks);
 
     return suite;
   }
