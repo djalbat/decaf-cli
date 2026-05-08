@@ -2,7 +2,7 @@
 
 import Suite from "../runnable/suite";
 
-export default function xdescribe(description, callback, context) {
+export default function skippedSuiteDirective(description, callback, context) {
   let currentSuite;
 
   ({ currentSuite } = context);

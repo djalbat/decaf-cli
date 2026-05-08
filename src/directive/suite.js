@@ -2,7 +2,7 @@
 
 import Suite from "../runnable/suite";
 
-export default function describe(description, callback, context) {
+export default function suiteDirective(description, callback, context) {
   let currentSuite;
 
   ({ currentSuite } = context);

@@ -2,7 +2,7 @@
 
 import Hook from "../runnable/hook";
 
-export default function before(callback, context) {
+export default function beforeHookDirective(callback, context) {
   const { currentSuite } = context,
         parentSuite = currentSuite, ///
         hook = Hook.fromParentSuiteAndCallback(parentSuite, callback),

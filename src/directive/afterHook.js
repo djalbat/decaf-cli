@@ -2,11 +2,11 @@
 
 import Hook from "../runnable/hook";
 
-export default function beforeEach(callback, context) {
+export default function afterHookDirective(callback, context) {
   const { currentSuite } = context,
         parentSuite = currentSuite, ///
         hook = Hook.fromParentSuiteAndCallback(parentSuite, callback),
-        beforeEachHook = hook;  ///
+        afterHook = hook;  ///
 
-  currentSuite.addBeforeEachHook(beforeEachHook);
+  currentSuite.addAfterHook(afterHook);
 }

@@ -39,7 +39,7 @@ Commands:
   
 Arguments:
 
-  test-directory                                 The tests directory
+  entry                                          The entry point, either a file or a directory
   
 Options:
 

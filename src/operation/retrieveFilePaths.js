@@ -8,19 +8,27 @@ const { concatenatePaths } = pathUtilities,
       { readDirectory, isEntryDirectory } = fileSystemUtilities;
 
 export default function retrieveFilePathsOperation(proceed, abort, context) {
-  const { testDirectoryName } = context,
-        filePaths = retrieveFilePaths(testDirectoryName, context);
+  const { entryPath } = context,
+        currentWorkingDirectoryPath = process.cwd();
+
+  Object.assign(context, {
+    currentWorkingDirectoryPath
+  });
+
+  const filePaths = retrieveFilePaths(entryPath, context);
 
   Object.assign(context, {
     filePaths
   });
 
+  delete context.currentWorkingDirectoryPath;
+
   proceed();
 }
 
-function retrieveFilePaths(testDirectoryName, context) {
+function retrieveFilePaths(entryPath, context) {
   const filePaths = [],
-        relateivePath = testDirectoryName;  ///
+        relateivePath = entryPath;  ///
 
   filePathsFromRelativeDirectoryPath(filePaths, relateivePath, context);
 
@@ -29,26 +37,30 @@ function retrieveFilePaths(testDirectoryName, context) {
 
 function filePathsFromRelativeDirectoryPath(filePaths, relativePath, context) {
   const { currentWorkingDirectoryPath } = context,
-        absoluteDirectoryPath = concatenatePaths(currentWorkingDirectoryPath, relativePath),
-        subEntryNames = readDirectory(absoluteDirectoryPath);
+        absolutePath = concatenatePaths(currentWorkingDirectoryPath, relativePath),
+        entryDirectory = isEntryDirectory(absolutePath);
 
-  subEntryNames.forEach((subEntryName) => {
-    const subEntryNameHiddenName = isNameHiddenName(subEntryName);
+  if (entryDirectory) {
+    const directoryPath = absolutePath, ///
+          subEntryNames = readDirectory(directoryPath);
 
-    if (!subEntryNameHiddenName) {
-      const path = concatenatePaths(relativePath, subEntryName),
-            absolutePath = concatenatePaths(currentWorkingDirectoryPath, path),
-            entryDirectory = isEntryDirectory(absolutePath);
+    subEntryNames.forEach((subEntryName) => {
+      const subEntryNameHiddenName = isNameHiddenName(subEntryName);
 
-      if (entryDirectory) {
-        const relativePath = path; ///
+      if (!subEntryNameHiddenName) {
+        const path = concatenatePaths(relativePath, subEntryName);
 
-        filePathsFromRelativeDirectoryPath(filePaths, relativePath, context); ///
-      } else {
-        const filePath = path;  ///
+        if (entryDirectory) {
+          const relativePath = path; ///
 
-        filePaths.push(filePath);
+          filePathsFromRelativeDirectoryPath(filePaths, relativePath, context); ///
+        } else {
+        }
       }
-    }
-  });
+    });
+  } else {
+    const filePath = absolutePath;  ///
+
+    filePaths.push(filePath);
+  }
 }

@@ -2,27 +2,25 @@
 
 import action from "../action";
 import runOperation from "../operation/run";
-import assignOperation from "../operation/assign";
-import collectOperation from "../operation/collect";
 import TerminalReporter from "../reporter/terminal";
+import collectRunnablesOperation from "../operation/collectRunnables";
+import assignDirectivesOperation from "../operation/assignDirectives";
 import retrieveFilePathsOperation from "../operation/retrieveFilePaths";
 
 import { TEST_RUN_FAILED_MESSAGE } from "../messages";
 
-export default function testAction(testDirectoryName, failFast) {
+export default function testAction(entryPath, failFast) {
   const Reporter = TerminalReporter,  ///
         operations = [
           retrieveFilePathsOperation,
-          assignOperation,
-          collectOperation,
+          assignDirectivesOperation,
+          collectRunnablesOperation,
           runOperation
         ],
-        currentWorkingDirectoryPath = process.cwd(),
         context = {
           Reporter,
           failFast,
-          testDirectoryName,
-          currentWorkingDirectoryPath
+          entryPath
         };
 
   action(operations, (success) => {

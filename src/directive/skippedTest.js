@@ -2,7 +2,7 @@
 
 import Test from "../runnable/test";
 
-export default function xit(description, callback, context) {
+export default function skippedTestDirective(description, callback, context) {
   const { currentSuite } = context,
         parentSuite = currentSuite, ///
         skipped = true,

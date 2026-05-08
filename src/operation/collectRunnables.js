@@ -2,15 +2,13 @@
 
 import { pathToFileURL } from "node:url";
 
-import { pathUtilities, asynchronousUtilities } from "necessary";
+import { asynchronousUtilities } from "necessary";
 
 import Suite from "../runnable/suite";
 
-const { concatenatePaths } = pathUtilities;
-
 const { forEach } = asynchronousUtilities;
 
-export default function collectOperation(proceed, abort, context) {
+export default function collectRunnablesOperation(proceed, abort, context) {
   const { filePaths } = context,
         suite = Suite.fromNothing(),
         success = true,
@@ -36,9 +34,7 @@ export default function collectOperation(proceed, abort, context) {
 }
 
 function importFile(filePath, next, done, context) {
-  const { currentWorkingDirectoryPath } = context,
-        absoluteFilePath = concatenatePaths(currentWorkingDirectoryPath, filePath),
-        path = absoluteFilePath,  ///
+  const path = filePath,  ///
         fileUrl = pathToFileURL(path),
         { href } = fileUrl,
         specifier = href; ///

@@ -44,7 +44,6 @@ export default class Test extends Runnable{
           test = new Test(error, parentSuite, description, skipped, focused, callback);
 
     return test;
-
   }
 
   static fromParentSuiteDescriptionAndCallback(parentSuite, description, callback) {
