@@ -14,6 +14,16 @@ export function equal(valueA, valueB) {
   throw new Error(`The '${formatValue(valueA)}' and '${formatValue(valueB)}' values are not equal.`);
 }
 
+export function throws(block) {
+  try {
+    block();
+  } catch (error) {
+    return;
+  }
+
+  throw new Error(`An exception was not thrown..`);
+}
+
 export function isTrue(value) {
   if (value === true) {
     return;
@@ -96,6 +106,16 @@ export function notEqual(valueA, valueB) {
   }
 
   throw new Error(`The '${formatValue(valueA)}' and '${formatValue(valueB)}' values are equal.`);
+}
+
+export function doesNotThrow(block) {
+  try {
+    block();
+  } catch (error) {
+    const { message } = error;
+
+    throw new Error(`An exception was thrown with a '${message}' message..`);
+  }
 }
 
 export function isFalse(value) {
@@ -196,6 +216,7 @@ export function instanceOf(instance, Class) {
 
 export default {
   equal,
+  throws,
   isTrue,
   isNaN,
   isNull,
@@ -206,6 +227,7 @@ export default {
   isNumber,
   isBoolean,
   notEqual,
+  doesNotThrow,
   isFalse,
   isNotNaN,
   isNotNull,
