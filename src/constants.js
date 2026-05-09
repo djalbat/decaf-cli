@@ -1,5 +1,6 @@
 "use strict";
 
+export const FUNCTION = "function";
 export const DECAF_CLI = "Decaf-CLI";
 export const DOUBLE_SPACE = "  ";
 export const PENDING_DELAY = 100;
