@@ -34,6 +34,14 @@ export default function collectRunnablesOperation(proceed, abort, context) {
 }
 
 function importFile(filePath, next, done, context) {
+  const filePathJavaScrioptPath = isFilePathJavaScriptFilePath(filePath);
+
+  if (!filePathJavaScrioptPath) {
+    next();
+
+    return;
+  }
+
   const path = filePath,  ///
         fileUrl = pathToFileURL(path),
         { href } = fileUrl,
@@ -52,4 +60,12 @@ function importFile(filePath, next, done, context) {
 
       done();
     });
+}
+
+const javaScriptFilePathRegularExpression = /\.(js|cjs|mjs)$/i;
+
+function isFilePathJavaScriptFilePath(filePath) {
+  const filePathJavaScrioptPath = javaScriptFilePathRegularExpression.test(filePath,);
+
+  return filePathJavaScrioptPath;
 }
