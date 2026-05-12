@@ -110,7 +110,7 @@ export default class Reporter {
   summarise() {
     const totalCount = this.failedCount + this.skippedCount + this.successfulCount;
 
-    this.simpleConsoleLog(`A total of ${totalCount} tests ran with ${red(this.failedCount)} failures, ${cyan(this.skippedCount)} skipped and ${green(this.successfulCount)} successes.`);
+    this.simpleConsoleLog(`\n Ran A total of ${totalCount} tests ran with ${red(this.failedCount)} failures, ${cyan(this.skippedCount)} skipped and ${green(this.successfulCount)} successes.`);
   }
 
   consoleLog(runnable, eventName) {
