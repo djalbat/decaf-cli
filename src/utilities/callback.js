@@ -1,10 +1,8 @@
 "use strict";
 
 import { isResultPromise } from "../utilities/promise";
+import { UNCAUGHT_EXCEPTION } from "../constants";
 import { CALLBACK_CALLED_TWICE_MESSAGE } from "../messages";
-import { MAXIMUM_COUNT, UNCAUGHT_EXCEPTION } from "../constants";
-
-let count = 0;
 
 export function failOrContinue(next, done, context) {
   let failedFast = false;
@@ -58,17 +56,7 @@ export function executeCallback(callback, next, done, context) {
       }
     }
 
-    count++;
-
-    if (count > MAXIMUM_COUNT) {
-      count = 0;
-
-      setImmediate(next);
-
-      return;
-    }
-
-    next();
+    setImmediate(next);
   }
 
   const uncaughtExceptionListener = (error) => {
