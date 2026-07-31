@@ -1,7 +1,7 @@
 {
   "name": "decaf-cli",
   "author": "James Smith",
-  "version": "1.0.36",
+  "version": "1.0.37",
   "license": "MIT, Anti-996",
   "homepage": "https://github.com/djalbat/decaf-cli",
   "description": "Caffeine free tests and assertions.",
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "argumentative": "^2.0.47",
-    "necessary": "^17.6.1"
+    "necessary": "^17.6.3"
   },
   "devDependencies": {
     "@swc/core": "1.13.20",
