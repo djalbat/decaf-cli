@@ -6,3 +6,4 @@ export const DOUBLE_SPACE = "  ";
 export const PENDING_DELAY = 100;
 export const OBJECT_OBJECT = "[object Object]";
 export const UNCAUGHT_EXCEPTION = "uncaughtException";
+export const MILLISECONDS_PER_SECOND = 1000;

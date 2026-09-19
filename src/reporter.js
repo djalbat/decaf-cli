@@ -1,6 +1,7 @@
 "use strict";
 
 import { red, cyan, green } from "./utilities/effects";
+import { MILLISECONDS_PER_SECOND } from "./constants";
 import { TEST_FAILED_EVENT_NAME,
          TEST_IGNORED_EVENT_NAME,
          TEST_STARTED_EVENT_NAME,
@@ -115,7 +116,7 @@ export default class Reporter {
   summarise() {
     const endTime = Date.now(), ///
           totalCount = this.failedCount + this.skippedCount + this.successfulCount,
-          totalSeconds = Math.floor(endTime - this.startTime) / 1000;
+          totalSeconds = Math.floor(endTime - this.startTime) / MILLISECONDS_PER_SECOND;
 
     this.simpleConsoleLog(`\n Ran A total of ${totalCount} tests ran with ${red(this.failedCount)} failures, ${cyan(this.skippedCount)} skipped and ${green(this.successfulCount)} successes in ${totalSeconds} seconds.`);
   }
