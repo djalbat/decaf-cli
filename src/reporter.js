@@ -9,10 +9,15 @@ import { TEST_FAILED_EVENT_NAME,
          TEST_SUITE_FINISHED_EVENT_NAME } from "./eventNames";
 
 export default class Reporter {
-  constructor(failedCount, skippedCount, successfulCount) {
+  constructor(startTime, failedCount, skippedCount, successfulCount) {
+    this.startTime = startTime;
     this.failedCount = failedCount;
     this.skippedCount = skippedCount;
     this.successfulCount = successfulCount;
+  }
+
+  getStartTime() {
+    return this.startTime;
   }
 
   getFailedCount() {
@@ -108,9 +113,11 @@ export default class Reporter {
   }
 
   summarise() {
-    const totalCount = this.failedCount + this.skippedCount + this.successfulCount;
+    const endTime = Date.now(), ///
+          totalCount = this.failedCount + this.skippedCount + this.successfulCount,
+          totalSeconds = Math.floor(endTime - this.startTime) / 1000;
 
-    this.simpleConsoleLog(`\n Ran A total of ${totalCount} tests ran with ${red(this.failedCount)} failures, ${cyan(this.skippedCount)} skipped and ${green(this.successfulCount)} successes.`);
+    this.simpleConsoleLog(`\n Ran A total of ${totalCount} tests ran with ${red(this.failedCount)} failures, ${cyan(this.skippedCount)} skipped and ${green(this.successfulCount)} successes in ${totalSeconds} seconds.`);
   }
 
   consoleLog(runnable, eventName) {
@@ -122,10 +129,11 @@ export default class Reporter {
   }
 
   static fromNothing(Class, ...remainingArguments) {
-    const failedCount = 0,
+    const startTime = Date.now(), ///
+          failedCount = 0,
           skippedCount = 0,
           successfulCount = 0,
-          reporter = new Class(failedCount, skippedCount, successfulCount, ...remainingArguments);
+          reporter = new Class(startTime, failedCount, skippedCount, successfulCount, ...remainingArguments);
 
     return reporter;
   }
