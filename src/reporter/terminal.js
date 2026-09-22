@@ -15,8 +15,8 @@ import { TEST_FAILED_EVENT_NAME,
          TEST_SUITE_FINISHED_EVENT_NAME } from "../eventNames";
 
 export default class TerminalReporter extends Reporter {
-  constructor(failedCount, skippedCount, successfulCount, index, interval) {
-    super(failedCount, skippedCount, successfulCount);
+  constructor(startTime, failedCount, skippedCount, successfulCount, index, interval) {
+    super(startTime, failedCount, skippedCount, successfulCount);
 
     this.index = index;
     this.interval = interval;
